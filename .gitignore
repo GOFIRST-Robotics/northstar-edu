@@ -1,0 +1,16 @@
+*.pyc
+
+northstar-edu-project/build
+northstar-edu-project/Pipfile.lock
+project.xml.log
+
+.vscode/.cortex-debug.pesripherals.state.json
+.vscode/.cortex-debug.registers.state.json
+.sconsign.dblite
+.robot_type.txt
+
+gcov-result
+
+docs/_build
+docs/api
+docs/doxyoutput

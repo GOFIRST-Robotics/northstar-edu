@@ -1,0 +1,69 @@
+{
+    "configurations": [
+        {
+            "name": "chassis",
+            "includePath": [
+                "${default}",
+                "northstar-edu-project/taproot/modm/src",
+                "northstar-edu-project/taproot/modm/ext/cmsis/core",
+                "northstar-edu-project/taproot/modm/ext/cmsis/device",
+                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"        
+            ],
+            "compilerPath": "arm-none-eabi-g++",
+            "intelliSenseMode": "gcc-arm",
+            "browse": { "limitSymbolsToIncludedHeaders": true },
+            "defines": [
+                "TARGET_CHASSIS"
+            ]
+        },
+        {
+            "name": "launcher",
+            "includePath": [
+                "${default}",
+                "northstar-edu-project/taproot/modm/src",
+                "northstar-edu-project/taproot/modm/ext/cmsis/core",
+                "northstar-edu-project/taproot/modm/ext/cmsis/device",
+                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"        
+            ],
+            "compilerPath": "arm-none-eabi-g++",
+            "intelliSenseMode": "gcc-arm",
+            "browse": { "limitSymbolsToIncludedHeaders": true },
+            "defines": [
+                "TARGET_LAUNCHER"
+            ]
+        },
+        {
+            "name": "chassis fly_sky",
+            "includePath": [
+                "${default}",
+                "northstar-edu-project/taproot/modm/src",
+                "northstar-edu-project/taproot/modm/ext/cmsis/core",
+                "northstar-edu-project/taproot/modm/ext/cmsis/device",
+                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"        
+            ],
+            "compilerPath": "arm-none-eabi-g++",
+            "intelliSenseMode": "gcc-arm",
+            "browse": { "limitSymbolsToIncludedHeaders": true },
+            "defines": [
+                "TARGET_CHASSIS", "FLY_SKY"
+            ]
+        },
+        {
+            "name": "launcher fly_sky",
+            "includePath": [
+                "${default}",
+                "northstar-edu-project/taproot/modm/src",
+                "northstar-edu-project/taproot/modm/ext/cmsis/core",
+                "northstar-edu-project/taproot/modm/ext/cmsis/device",
+                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"        
+            ],
+            "compilerPath": "arm-none-eabi-g++",
+            "intelliSenseMode": "gcc-arm",
+            "browse": { "limitSymbolsToIncludedHeaders": true },
+            "defines": [
+                "TARGET_LAUNCHER", "FLY_SKY"
+            ]
+        }
+    ],
+    "version": 4
+}
