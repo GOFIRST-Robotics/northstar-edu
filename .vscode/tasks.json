@@ -150,19 +150,6 @@
             }
         },
         {
-            "label": "Program - Debug",
-            "type": "shell",
-            "presentation": {
-                "panel": "new"
-            },
-            "command": "pipenv run scons run profile=debug",
-            "group": "build",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceRoot}/northstar-edu-project"
-            }
-        },
-        {
             "label": "Build - Debug (chassis, FLY_SKY)",
             "type": "shell",
             "presentation": {
@@ -182,6 +169,58 @@
                 "panel": "new"
             },
             "command": "pipenv run scons build profile=debug profiling=true robot=TARGET_LAUNCHER remote=FLY_SKY",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/northstar-edu-project"
+            }
+        },
+        {
+            "label": "Program - Debug (chassis)",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "pipenv run scons run profile=debug profiling=true robot=TARGET_CHASSIS",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/northstar-edu-project"
+            }
+        },
+        {
+            "label": "Program - Debug (launcher)",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "pipenv run scons run profile=debug profiling=true robot=TARGET_LAUNCHER",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/northstar-edu-project"
+            }
+        },
+         {
+            "label": "Program - Debug (chassis, FLY_SKY)",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "pipenv run scons run profile=debug profiling=true robot=TARGET_CHASSIS remote=FLY_SKY",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/northstar-edu-project"
+            }
+        },
+         {
+            "label": "Program - Debug (launcher, FLY_SKY)",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "pipenv run scons run profile=debug profiling=true robot=TARGET_LAUNCHER remote=FLY_SKY",
             "group": "build",
             "problemMatcher": [],
             "options": {

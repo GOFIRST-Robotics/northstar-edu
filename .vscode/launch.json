@@ -42,12 +42,51 @@
             ]
         },
         {
-            "name": "Debug Hardware",
+            "name": "Debug Chassis",
             "type": "cortex-debug",
             "request": "launch",
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
-            "preLaunchTask": "Program - Debug",
+            "preLaunchTask": "Program - Debug (chassis)",
+            "executable": "./northstar-edu-project/build/hardware/scons-debug/northstar-edu-project.elf",
+            "device": "STM32F427II",
+            "configFiles": [
+                "./northstar-edu-project/openocd.cfg"
+            ]
+        },
+        {
+            "name": "Debug Launcher",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Program - Debug (launcher)",
+            "executable": "./northstar-edu-project/build/hardware/scons-debug/northstar-edu-project.elf",
+            "device": "STM32F427II",
+            "configFiles": [
+                "./northstar-edu-project/openocd.cfg"
+            ]
+        },
+        {
+            "name": "Debug Chassis FLY_SKY",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Program - Debug (chassis, FLY_SKY)",
+            "executable": "./northstar-edu-project/build/hardware/scons-debug/northstar-edu-project.elf",
+            "device": "STM32F427II",
+            "configFiles": [
+                "./northstar-edu-project/openocd.cfg"
+            ]
+        },
+        {
+            "name": "Debug Launcher FLY_SKY",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Program - Debug (launcher, FLY_SKY)",
             "executable": "./northstar-edu-project/build/hardware/scons-debug/northstar-edu-project.elf",
             "device": "STM32F427II",
             "configFiles": [

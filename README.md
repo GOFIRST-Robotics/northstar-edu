@@ -1,6 +1,3 @@
-[![pipeline status](https://gitlab.com/aruw/controls/NorthStarFleet2025/badges/develop/pipeline.svg)](https://gitlab.com/aruw/controls/NorthStarFleet2025/-/commits/develop)
-
-
 ## Resources
 
 - **The [Taproot wiki](https://gitlab.com/aruw/controls/taproot/-/wikis/home). It has lots of content and we strongly recommend you browse through it to get a sense of
@@ -41,7 +38,7 @@ _Make sure you have followed the above setup instructions._
 Run the following to clone this repository:
 
 ```
-git clone --recursive https://github.com/GOFIRST-Robotics/RoboMaster2025NorthStar.git
+git clone --recursive https://github.com/Nathan-Metko-UMN/Northstar-edu.git
 ```
 
 If you use the Docker container, or have already cloned the repository yourself, you should instead
@@ -80,19 +77,16 @@ for getting around VSCode. There are many shortcuts that make programming faster
 _If you would like to use the terminal instead, see the section "Building and running via the
 terminal" below._
 
-1. Make sure you have VSCode opened in the folder `NorthStarFleet2025` (**not
+1. Make sure you have VSCode opened in the folder `Northstar-edu` (**not
    `northstar-edu-project`**)
 2. Connect an ST-Link to the RoboMaster Development Board and your computer.
 3. In VSCode, open the Command Palette (<kbd>Ctrl</kbd>+<kbd>shift</kbd>+<kbd>P</kbd>)
 4. Find `Tasks: Run Task`. You should see the options below. Select `Program - Debug` or `Program -
-   Release`.<br><br>
-    <img
-    src=https://gitlab.com/aruw/controls/aruw-mcb/uploads/2ffb02c86387916c2c49ac3548151b38/image.png
-    height="200px" />
+   Release` that coresponds to the subsystem and remote you want to build for.<br><br>
 
 ### Debugging with an ST-Link
 
-1. Open the folder `aruw-northstar-edu-project` in VSCode. Hit the debug tab on the left side or type
+1. Open the folder `northstar-edu-project` in VSCode. Hit the debug tab on the left side or type
    <kbd>Ctrl</kbd>+<kbd>shift</kbd>+<kbd>D</kbd>.
 2. Hit the green play arrow on the left top of the screen.
 3. See [this
