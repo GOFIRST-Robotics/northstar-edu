@@ -21,18 +21,18 @@ ChassisDriveCommand::ChassisDriveCommand(
     addSubsystemRequirement(chassis);
 }
 
-void ChassisDriveCommand::execute()
-{
-    auto scale = [](float raw) -> float {
-        return limitVal(raw, -1.0f, 1.0f) * MAX_CHASSIS_SPEED_MPS;
-    };
-    chassis->setVelocityFieldDrive(
-        scale(operatorInterface->getDrivetrainVerticalTranslation()),
-        -scale(operatorInterface->getDrivetrainHorizontalTranslation()),
-        scale(operatorInterface->getDrivetrainRotationalTranslation()));
-}
+// void ChassisDriveCommand::execute()
+// {
+//     auto scale = [](float raw) -> float {
+//         return limitVal(raw, -1.0f, 1.0f) * MAX_CHASSIS_SPEED_MPS;
+//     };
+//     chassis->setVelocityFieldDrive(
+//         scale(operatorInterface->getDrivetrainVerticalTranslation()),
+//         -scale(operatorInterface->getDrivetrainHorizontalTranslation()),
+//         scale(operatorInterface->getDrivetrainRotationalTranslation()));
+// }
 
-void ChassisDriveCommand::end(bool interrupted) { chassis->setVelocityFieldDrive(0, 0, 0); }
+// void ChassisDriveCommand::end(bool interrupted) { chassis->setVelocityFieldDrive(0, 0, 0); }
 };  // namespace src::chassis
 
 #endif

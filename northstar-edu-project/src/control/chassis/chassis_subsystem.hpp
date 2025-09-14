@@ -55,17 +55,30 @@ public:
 
     static constexpr float MAX_WHEELSPEED_RPM = 9000;
 
-    ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config);
+    /* Chassis task 1:
+    This is a .hpp file which is called a header file. This is used in c++ to create a blueprint for
+    a class that can be passed into other files to that they know what is in the class. It is also
+    usefull for organisation and allows you to use methods in any order on the .cpp file.
+
+    STEP 1: DECLARE THE CONSTRUCTOR
+
+    The constructor needs to be named the same as the class name so you can scroll up to see the
+    definition and copy that name. Now it needs to take in a tap::Drivers* drivers and a const
+    ChassisConfig& config. You will learn what these are latter for now just copy them.
+    It should look like this Ex. "ClassName(Thing thing1, Thing thing2);"
+
+    STEP 2: DECLARE METHODS
+
+    Just like the constructor we need to declare the methods.
+    These methods need to be declared:
+        -setVelocityFeildDrive() which needs variables for forward sideways and rotational
+    velocities
+        -driveBasedOnHeading() which needs the same as the previous method plus a variable
+    for the heading
+
+    */
 
     void initialize() override;
-
-    mockable void setVelocityFieldDrive(float forward, float sideways, float rotational);
-
-    mockable void setVelocityBeyBladeDrive(float forward, float sideways, float rotational);
-
-    void driveBasedOnHeading(float forwards, float sideways, float rotational, float heading);
-
-    float getChassisZeroTurret();
 
     void refresh() override;
 
@@ -91,16 +104,25 @@ private:
         return (mps / WHEEL_CIRCUMFERANCE_M) * SEC_PER_M * GEAR_RATIO;
     }
 
-    float beyBladeRotationSpeed = 0.0f;
+    /* STEP 3: DECLARE VARIABLES
 
+    Variables should also be defined here if they are going to be global or accessed by other
+    classes. These are the variables we need declared here:
+        -desiredOutput array of floats which represents the voltage we want the motor at.
+
+    Here is what desiredOutput should look like
     std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> desiredOutput;
 
-    std::array<Pid, static_cast<uint8_t>(MotorId::NUM_MOTORS)> pidControllers;
+        -pidControllers array of Pid objects that the motors use.
 
-    std::array<tap::algorithms::Ramp, static_cast<uint8_t>(MotorId::NUM_MOTORS)> rampControllers;
+        -rampControllers array or tap::algorithms::Ramp objects to limit acceleration on the wheels
+    */
 
 protected:
-    std::array<Motor, static_cast<uint8_t>(MotorId::NUM_MOTORS)> motors;
+    /*
+        -motors array of Motor objects.
+
+     */
 };  // class ChassisSubsystem
 }  // namespace src::chassis
 

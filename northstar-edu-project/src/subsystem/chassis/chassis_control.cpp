@@ -35,24 +35,24 @@ driversFunc drivers = DoNotUse_getDrivers;
 namespace chassis_control
 {
 // chassis subsystem
-src::chassis::ChassisSubsystem chassisSubsystem(
-    drivers(),
-    src::chassis::ChassisConfig{
-        .leftFrontId = src::chassis::LEFT_FRONT_MOTOR_ID,
-        .leftBackId = src::chassis::LEFT_BACK_MOTOR_ID,
-        .rightBackId = src::chassis::RIGHT_BACK_MOTOR_ID,
-        .rightFrontId = src::chassis::RIGHT_FRONT_MOTOR_ID,
-        .canBus = CanBus::CAN_BUS1,
-        .wheelVelocityPidConfig = modm::Pid<float>::Parameter(
-            src::chassis::VELOCITY_PID_KP,
-            src::chassis::VELOCITY_PID_KI,
-            src::chassis::VELOCITY_PID_KD,
-            src::chassis::VELOCITY_PID_MAX_ERROR_SUM),
-    });
+// src::chassis::ChassisSubsystem chassisSubsystem(
+//     drivers(),
+//     src::chassis::ChassisConfig{
+//         .leftFrontId = src::chassis::LEFT_FRONT_MOTOR_ID,
+//         .leftBackId = src::chassis::LEFT_BACK_MOTOR_ID,
+//         .rightBackId = src::chassis::RIGHT_BACK_MOTOR_ID,
+//         .rightFrontId = src::chassis::RIGHT_FRONT_MOTOR_ID,
+//         .canBus = CanBus::CAN_BUS1,
+//         .wheelVelocityPidConfig = modm::Pid<float>::Parameter(
+//             src::chassis::VELOCITY_PID_KP,
+//             src::chassis::VELOCITY_PID_KI,
+//             src::chassis::VELOCITY_PID_KD,
+//             src::chassis::VELOCITY_PID_MAX_ERROR_SUM),
+//     });
 
-src::chassis::ChassisDriveCommand chassisDriveCommand(
-    &chassisSubsystem,
-    &drivers()->controlOperatorInterface);
+// src::chassis::ChassisDriveCommand chassisDriveCommand(
+//     &chassisSubsystem,
+//     &drivers()->controlOperatorInterface);
 
 void initializeSubsystems(Drivers *drivers) { chassisSubsystem.initialize(); }
 

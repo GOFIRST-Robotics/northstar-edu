@@ -113,8 +113,6 @@ static inline void applyAccelerationToRamp(
         ramp.update(maxDeceleration * dt);
     }
 }
-// STEP 2 (Tank Drive): Add getChassisTankLeftInput and getChassisTankRightInput function
-// definitions
 
 float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
 {

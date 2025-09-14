@@ -12,7 +12,6 @@ using tap::algorithms::limitVal;
 
 namespace Communications::Rev
 {
-// STEP 1 (Tank Drive): create constructor
 RevMotorTester::RevMotorTester(tap::Drivers* drivers)
     : Subsystem(drivers),
       motor1(
@@ -36,7 +35,6 @@ RevMotorTester::RevMotorTester(tap::Drivers* drivers)
 {
 }
 
-// STEP 2 (Tank Drive): initialize function
     void RevMotorTester::initialize() {
         motor1.initialize();
         motor1.setControlMode(tap::motor::RevMotor::ControlMode::VOLTAGE);

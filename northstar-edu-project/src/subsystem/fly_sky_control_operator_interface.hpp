@@ -59,8 +59,6 @@ public:
     static constexpr float MAX_ACCELERATION_R = 40'000.0f;
     static constexpr float MAX_DECELERATION_R = 50'000.0f;
 
-    // STEP 1 (Tank Drive): Add getChassisTankLeftInput and getChassisTankRightInput function
-    // declarations
     float getDrivetrainHorizontalTranslation();
 
     float getMecanumHorizontalTranslationKeyBoard();
