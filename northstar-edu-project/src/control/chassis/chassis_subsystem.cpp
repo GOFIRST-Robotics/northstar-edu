@@ -55,14 +55,6 @@ void ChassisSubsystem::initialize()
         i.initialize();
     }
 }
-float LFSpeed;
-float LBSpeed;
-float RFSpeed;
-float RBSpeed;
-
-float topheading;
-float bottomheading;
-float difference;
 
 void ChassisSubsystem::setVelocityFieldDrive(float forward, float sideways, float rotational)
 {
@@ -81,13 +73,13 @@ void ChassisSubsystem::driveBasedOnHeading(
     double vx_local = forward * cos_theta + sideways * sin_theta;
     double vy_local = -forward * sin_theta + sideways * cos_theta;
     double sqrt2 = sqrt(2.0);
-    LFSpeed = mpsToRpm(
+    float LFSpeed = mpsToRpm(
         (vx_local - vy_local) / sqrt2 + (rotational)*DIST_TO_CENTER * sqrt2);  // Front-left wheel
-    RFSpeed = mpsToRpm(
+    float RFSpeed = mpsToRpm(
         (-vx_local - vy_local) / sqrt2 + (rotational)*DIST_TO_CENTER * sqrt2);  // Front-right wheel
-    RBSpeed = mpsToRpm(
+    float RBSpeed = mpsToRpm(
         (-vx_local + vy_local) / sqrt2 + (rotational)*DIST_TO_CENTER * sqrt2);  // Rear-right wheel
-    LBSpeed = mpsToRpm(
+    float LBSpeed = mpsToRpm(
         (vx_local + vy_local) / sqrt2 + (rotational)*DIST_TO_CENTER * sqrt2);  // Rear-left wheel
     int LF = static_cast<int>(MotorId::LF);
     int LB = static_cast<int>(MotorId::LB);

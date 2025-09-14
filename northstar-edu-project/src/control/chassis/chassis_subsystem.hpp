@@ -61,11 +61,7 @@ public:
 
     mockable void setVelocityFieldDrive(float forward, float sideways, float rotational);
 
-    mockable void setVelocityBeyBladeDrive(float forward, float sideways, float rotational);
-
     void driveBasedOnHeading(float forwards, float sideways, float rotational, float heading);
-
-    float getChassisZeroTurret();
 
     void refresh() override;
 
@@ -90,8 +86,6 @@ private:
 
         return (mps / WHEEL_CIRCUMFERANCE_M) * SEC_PER_M * GEAR_RATIO;
     }
-
-    float beyBladeRotationSpeed = 0.0f;
 
     std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> desiredOutput;
 
