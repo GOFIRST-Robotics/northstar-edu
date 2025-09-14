@@ -80,6 +80,18 @@ MoveUnjamIntegralComprisedCommand rotateAndUnjamAgitator(
     rotateAgitator,
     unjamAgitator);
 
+HoldRepeatCommandMapping leftMousePressedShoot(
+    drivers(),
+    {&rotateAndUnjamAgitator},
+    RemoteMapState(RemoteMapState::MouseButton::LEFT),
+    false);
+
+HoldRepeatCommandMapping rightSwitchUpShoot(
+    drivers(),
+    {&rotateAndUnjamAgitator},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+    false);
+
 void initializeSubsystems(Drivers *drivers)
 {
     flywheel.initialize();
@@ -100,7 +112,13 @@ void startStandardCommands(Drivers *drivers)
         tap::algorithms::transforms::Transform(0, 0, 0, 0, modm::toRadian(-45), 0));
 }
 
-void registerStandardIoMappings(Drivers *drivers) {}
+void registerStandardIoMappings(Drivers *drivers)
+{
+    drivers->commandMapper.addMap(&leftMousePressedShoot);
+    drivers->commandMapper.addMap(&leftSwitchUpFlywheels);
+    drivers->commandMapper.addMap(&fPressedFlywheels);
+    drivers->commandMapper.addMap(&rightSwitchUpShoot);
+}
 
 RemoteSafeDisconnectFunction remoteSafeDisconnectFunction(drivers());
 
