@@ -73,43 +73,52 @@ void ChassisSubsystem::initialize()
     }
 }
 
-// void ChassisSubsystem::setVelocityFieldDrive(float forward, float sideways, float rotational)
-// {
-//     float robotHeading = fmod(drivers->bmi088.getYaw(), 2 * M_PI);
-//     driveBasedOnHeading(forward, sideways, rotational, robotHeading);
-// }
+/* STEP 5: driveBasedOnHeading METHOD
 
-// void ChassisSubsystem::driveBasedOnHeading(
-//     float forward,
-//     float sideways,
-//     float rotational,
-//     float heading)
-// {
-//     double cos_theta = cos(heading);
-//     double sin_theta = sin(heading);
-//     double vx_local = forward * cos_theta + sideways * sin_theta;
-//     double vy_local = -forward * sin_theta + sideways * cos_theta;
-//     double sqrt2 = sqrt(2.0);
-//     float LFSpeed = mpsToRpm(
-//         (vx_local - vy_local) / sqrt2 + (rotational)*DIST_TO_CENTER * sqrt2);  // Front-left
-//         wheel
-//     float RFSpeed = mpsToRpm(
-//         (-vx_local - vy_local) / sqrt2 + (rotational)*DIST_TO_CENTER * sqrt2);  // Front-right
-//         wheel
-//     float RBSpeed = mpsToRpm(
-//         (-vx_local + vy_local) / sqrt2 + (rotational)*DIST_TO_CENTER * sqrt2);  // Rear-right
-//         wheel
-//     float LBSpeed = mpsToRpm(
-//         (vx_local + vy_local) / sqrt2 + (rotational)*DIST_TO_CENTER * sqrt2);  // Rear-left wheel
-//     int LF = static_cast<int>(MotorId::LF);
-//     int LB = static_cast<int>(MotorId::LB);
-//     int RF = static_cast<int>(MotorId::RF);
-//     int RB = static_cast<int>(MotorId::RB);
-//     desiredOutput[LF] = limitVal<float>(LFSpeed, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
-//     desiredOutput[LB] = limitVal<float>(LBSpeed, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
-//     desiredOutput[RF] = limitVal<float>(RFSpeed, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
-//     desiredOutput[RB] = limitVal<float>(RBSpeed, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
-// }
+   Our robots use omni wheels for translation, so we have to calculate how fast each wheel should
+   spin for the robot to move a certain speed in a certain direction. This method also takes in a
+   heading which defines the forward. The math is complicated so here are the equations.
+
+   x = forward input
+   y = sideways input
+   r = rotational input
+   h = heading input
+
+   x_local = x * cos(h) + y * sin(h) (this transforms the x velo to the plane of the heading)
+
+   y_local = -x * sin(h) + y * cos(h) (this transforms the y velo to the plane of the heading)
+
+   left_front = (x_local - y_local) / sqrt2 + (r) * DIST_TO_CENTER * sqrt2;
+
+   right_front = (-x_local - y_local) / sqrt2 + (r) * DIST_TO_CENTER * sqrt2;
+
+   right_back = (-x_local + y_local) / sqrt2 + (r) * DIST_TO_CENTER * sqrt2;
+
+   left_back = (x_local + y_local) / sqrt2 + (r) * DIST_TO_CENTER * sqrt2;
+
+
+   Currently these are in units or meters per second so these need to be converted to rpm. You can
+   use the mpsToRpm function to do so but make sure to take a look at how it works. Once they are in
+   rpm you need to set the desiredOutput array at the position of the motor id to the value. One
+   thing to keep in mind is making sure these values are not to large. Use limit val to do so:
+   var _limited = limitVal<float>(var, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+   to make sure you input the correct wheel into the right index of desiredOutput look at the
+   MotorId enum to determine what motor is what index. After you set all 4 indexes you are done, the
+   motors will be told these values in the refresh method.
+
+   STEP 6: setVelocityFieldDrive METHOD
+
+   This method uses the previous method to drive field oriented. It also takes in values for
+   forward, sideways and rotational velocities. However it dose not take in a heading, it calculates
+   one. It dose this by looking at the gyroscope. So all you need to do is get the yaw from the gyro
+   like this drivers->bmi088.getYaw(), this in in radians. Once you have this just call
+   driveBasedOnHeading with the all the values it needs.
+
+*/
+
+/* STEP 7: REFRESH METHOD
+
+Here is the refresh method, go through is and try to understand what is happening.
 
 void ChassisSubsystem::refresh()
 {
@@ -134,6 +143,7 @@ void ChassisSubsystem::refresh()
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
 }
+*/
 }  // namespace src::chassis
 
 #endif
