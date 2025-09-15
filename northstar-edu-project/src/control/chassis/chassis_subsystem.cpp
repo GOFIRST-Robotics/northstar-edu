@@ -24,7 +24,7 @@ namespace src::chassis
        to efficiently access the configuration without copying it. The `const` keyword
        is a promise that we won't change the configuration.
 
-    STEP 2: BEGIN THE MEMBER INITIALIZER LIST
+       STEP 2: BEGIN THE MEMBER INITIALIZER LIST
 
     After the constructor's parameter list, type a colon `:`. This starts the member
     initializer list, which is the best place to set up all your member variables.
@@ -63,7 +63,8 @@ namespace src::chassis
     initializer list, the body of the constructor is empty, which is perfectly normal.
 */
 
-// Now, write your constructor code below this comment.
+//STEP 1-4 HERE
+
 
 void ChassisSubsystem::initialize()
 {
@@ -105,7 +106,10 @@ void ChassisSubsystem::initialize()
    to make sure you input the correct wheel into the right index of desiredOutput look at the
    MotorId enum to determine what motor is what index. After you set all 4 indexes you are done, the
    motors will be told these values in the refresh method.
+*/
+//STEP 5 HERE
 
+/*
    STEP 6: setVelocityFieldDrive METHOD
 
    This method uses the previous method to drive field oriented. It also takes in values for
@@ -115,6 +119,7 @@ void ChassisSubsystem::initialize()
    driveBasedOnHeading with the all the values it needs.
 
 */
+//STEP 6 HERE
 
 /* STEP 7: REFRESH METHOD
 
@@ -142,8 +147,8 @@ void ChassisSubsystem::refresh()
             desiredOutput[ii],
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
-}
-*/
+} Uncoment this block
+*/ 
 }  // namespace src::chassis
 
 #endif
