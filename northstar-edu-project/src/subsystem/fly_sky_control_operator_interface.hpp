@@ -23,7 +23,8 @@ class ControlOperatorInterface
 public:
     ControlOperatorInterface(tap::Drivers *drivers) : remote(drivers->remote) {}
 
-    /* ADD METHODS FOR
+    /* Chassis Task 5: ADD METHODS FOR
+    
         -getDrivetrainHorizontalTranslation
         -getDrivetrainVerticalTranslation
         -getDrivetrainRotationalTranslation

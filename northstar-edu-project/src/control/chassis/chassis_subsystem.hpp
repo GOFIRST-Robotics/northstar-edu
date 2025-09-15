@@ -66,7 +66,10 @@ public:
     definition and copy that name. Now it needs to take in a tap::Drivers* drivers and a const
     ChassisConfig& config. You will learn what these are latter for now just copy them.
     It should look like this Ex. "ClassName(Thing thing1, Thing thing2);"
+    */
+    //STEP 1 HERE
 
+    /*
     STEP 2: DECLARE METHODS
 
     Just like the constructor we need to declare the methods.
@@ -75,8 +78,8 @@ public:
     velocities
         -driveBasedOnHeading() which needs the same as the previous method plus a variable
     for the heading
-
     */
+    //STEP 2 HERE
 
     void initialize() override;
 
@@ -106,8 +109,8 @@ private:
 
     /* STEP 3: DECLARE VARIABLES
 
-    Variables should also be defined here if they are going to be global or accessed by other
-    classes. These are the variables we need declared here:
+    Variables should also be defined here if they are going to be global.
+    These are the variables we need declared here:
         -desiredOutput array of floats which represents the voltage we want the motor at.
 
     Here is what desiredOutput should look like
@@ -117,12 +120,16 @@ private:
 
         -rampControllers array or tap::algorithms::Ramp objects to limit acceleration on the wheels
     */
+    //STEP 3 private HERE
 
 protected:
-    /*
+    /* protected varables are able to be used within the class but not accesable from other classes just like a private var. 
+    but any classes that inherit this class can use protected varables
         -motors array of Motor objects.
 
      */
+    //STEP 3 protected HERE
+
 };  // class ChassisSubsystem
 }  // namespace src::chassis
 

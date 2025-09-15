@@ -18,7 +18,7 @@ namespace src
 {
 namespace control
 {
-/*
+/* Chassis task 6:
 For the translation methods here, dont worry about keyboard input. An example of accessing a channel
 would be remote.getChannel(FlySky::Channel::LEFT_HORIZONTAL)
 */

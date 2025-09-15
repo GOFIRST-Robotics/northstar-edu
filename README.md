@@ -64,6 +64,12 @@ scons run-tests
 **You will need to run `pipenv shell` from this directory _every time_ you open a new terminal,
 before using `scons` or `lbuild`.**
 
+## Starting the project
+
+There is a chassis, agitator, and flywheel, tutorial. To find where to start search for `"Chassis task 1"` or flywheel / agitator.
+
+Each task will have steps and comments to help you through. To find the next task serch for `"Chassis task 2"` or whatever your doing.
+
 ## Workflow guide
 
 ### Getting around VSCode
