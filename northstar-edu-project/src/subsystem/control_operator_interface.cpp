@@ -50,8 +50,10 @@ We want to make these methods also use keyboard key inputs if they are available
 
 An example of directional chanel input is remote.getChannel(Remote::Channel::LEFT_VERTICAL)
 An example of key input is remote.keyPressed(Remote::Key::S)
-Take note that the values for vertical and horizontal channels are percent output with 1.0f being
-100% of the max chassis speed. and for rotational it is in radians per second.
+Take note that the values for key presses are 0 for not pressed and 1 for pressed. Vertical and
+horizontal channels are percent output with 1.0f being 100% and -1.0f being 100% in the opposite
+direction. For rotational output, the method needs to return a radians per second. A good way to
+implement this is to multiply the output from the controller by a max speed
 
 After you are done with this step, you should repeat task 3 and 4 for the fly sky remote
 operator interface.
