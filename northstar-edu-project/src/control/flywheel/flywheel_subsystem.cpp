@@ -1,5 +1,4 @@
 #ifdef TARGET_LAUNCHER
-
 #include "flywheel_subsystem.hpp"
 
 #include "tap/algorithms/math_user_utils.hpp"
@@ -14,33 +13,46 @@ namespace src::control::flywheel
 {
 FlywheelSubsystem::FlywheelSubsystem(
     tap::Drivers *drivers,
-    tap::motor::REVMotorId leftMotorId,
-    tap::motor::REVMotorId rightMotorId,
-    tap::motor::REVMotorId upMotorId,
+    tap::motor::MotorId leftMotorId,
+    tap::motor::MotorId rightMotorId,
+    tap::motor::MotorId downMotorId,
     tap::can::CanBus canBus)
     : tap::control::Subsystem(drivers),
-      spinToRPMMap(SPIN_TO_INTERPOLATABLE_MPS_TO_DUTY),
-      leftWheel(drivers, leftMotorId, canBus, false, "Left Flywheel"),
+      spinToRPMMap(SPIN_TO_INTERPOLATABLE_MPS_TO_RPM),
+      velocityPidLeftWheel(
+          FLYWHEEL_PID_KP,
+          FLYWHEEL_PID_KI,
+          FLYWHEEL_PID_KD,
+          FLYWHEEL_PID_MAX_ERROR_SUM,
+          FLYWHEEL_PID_MAX_OUTPUT),
+      velocityPidRightWheel(
+          FLYWHEEL_PID_KP,
+          FLYWHEEL_PID_KI,
+          FLYWHEEL_PID_KD,
+          FLYWHEEL_PID_MAX_ERROR_SUM,
+          FLYWHEEL_PID_MAX_OUTPUT),
+      velocityPidDownWheel(
+          FLYWHEEL_PID_KP,
+          FLYWHEEL_PID_KI,
+          FLYWHEEL_PID_KD,
+          FLYWHEEL_PID_MAX_ERROR_SUM,
+          FLYWHEEL_PID_MAX_OUTPUT),
+      leftWheel(drivers, leftMotorId, canBus, true, "Left Flywheel"),
       rightWheel(drivers, rightMotorId, canBus, true, "Right Flywheel"),
-      upWheel(drivers, upMotorId, canBus, true, "Up Flywheel"),
+      downWheel(drivers, downMotorId, canBus, true, "Down Flywheel"),
       desiredLaunchSpeedLeft(0),
       desiredLaunchSpeedRight(0),
-      desiredLaunchSpeedUp(0),
+      desiredLaunchSpeedDown(0),
       desiredRpmRampLeft(0),
       desiredRpmRampRight(0),
-      desiredRpmRampUp(0){};
+      desiredRpmRampDown(0){};
 
 void FlywheelSubsystem::initialize()
 {
-    leftWheel.setControlMode(tap::motor::RevMotor::ControlMode::DUTY_CYCLE);
-    rightWheel.setControlMode(tap::motor::RevMotor::ControlMode::DUTY_CYCLE);
-    upWheel.setControlMode(tap::motor::RevMotor::ControlMode::DUTY_CYCLE);
     leftWheel.initialize();
     rightWheel.initialize();
-    upWheel.initialize();
-    // leftWheel.setControlMode(tap::motor::RevMotor::ControlMode::VELOCITY);
-    // rightWheel.setControlMode(tap::motor::RevMotor::ControlMode::VELOCITY);
-    // upWheel.setControlMode(tap::motor::RevMotor::ControlMode::VELOCITY);
+    downWheel.initialize();
+    prevTime = tap::arch::clock::getTimeMilliseconds();
 }
 
 void FlywheelSubsystem::setDesiredSpin(u_int16_t spin)
@@ -52,20 +64,16 @@ void FlywheelSubsystem::setDesiredSpin(u_int16_t spin)
     }
 }
 
-/**
- * using the set spin sets a desired rpm for the flywheels with the up wheel scaled by the spin
- * @param[in] speed in meters per second
- */
 void FlywheelSubsystem::setDesiredLaunchSpeed(float speed)
 {
     desiredLaunchSpeedLeft = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
     desiredLaunchSpeedRight = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
-    desiredLaunchSpeedUp =
+    desiredLaunchSpeedDown =
         limitVal(speed * (desiredSpinValue / 100.0f), 0.0f, MAX_DESIRED_LAUNCH_SPEED);  // uses spin
 
     desiredRpmRampLeft.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedLeft));
     desiredRpmRampRight.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedRight));
-    desiredRpmRampUp.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedUp));
+    desiredRpmRampDown.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedDown));
 }
 
 float FlywheelSubsystem::launchSpeedToFlywheelRpm(float launchSpeed) const
@@ -75,13 +83,12 @@ float FlywheelSubsystem::launchSpeedToFlywheelRpm(float launchSpeed) const
         spinToRPMMap.at(desiredSpin).size()};
     return MPSToRPMInterpolator.interpolate(launchSpeed);
 }
-float upRpm = 0;
-float rightRpm = 0;
-float leftRpm = 0;
-float upSetPoint = 0;
-float leftSetPoint = 0;
-float rightSetPoint = 0;
-
+float debugWheelLeft = 0;
+float debugWheelRight = 0;
+float debugWheelDown = 0;
+float debugDesiredLeft = 0;
+float debugDesiredRight = 0;
+float debugDesiredDown = 0;
 void FlywheelSubsystem::refresh()
 {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
@@ -89,20 +96,22 @@ void FlywheelSubsystem::refresh()
     {
         return;
     }
-
     desiredRpmRampLeft.update(FRICTION_WHEEL_RAMP_SPEED * (currTime - prevTime));
     desiredRpmRampRight.update(FRICTION_WHEEL_RAMP_SPEED * (currTime - prevTime));
-    desiredRpmRampUp.update(FRICTION_WHEEL_RAMP_SPEED * (currTime - prevTime));
+    desiredRpmRampDown.update(FRICTION_WHEEL_RAMP_SPEED * (currTime - prevTime));
     prevTime = currTime;
-    leftWheel.setControlValue(desiredRpmRampLeft.getValue());
-    rightWheel.setControlValue(desiredRpmRampRight.getValue());
-    upWheel.setControlValue(desiredRpmRampUp.getValue());
-    upRpm = upWheel.getVelocity();
-    rightRpm = rightWheel.getVelocity();
-    leftRpm = leftWheel.getVelocity();
-    upSetPoint = desiredRpmRampUp.getValue();
-    rightSetPoint = desiredRpmRampRight.getValue();
-    leftSetPoint = desiredRpmRampLeft.getValue();
+    velocityPidLeftWheel.update(desiredRpmRampLeft.getValue() - getWheelRPM(&leftWheel));
+    leftWheel.setDesiredOutput(static_cast<int32_t>(velocityPidLeftWheel.getValue()));
+    velocityPidRightWheel.update(desiredRpmRampRight.getValue() - getWheelRPM(&rightWheel));
+    rightWheel.setDesiredOutput(static_cast<int32_t>(velocityPidRightWheel.getValue()));
+    velocityPidDownWheel.update(desiredRpmRampDown.getValue() - getWheelRPM(&downWheel));
+    downWheel.setDesiredOutput(static_cast<int32_t>(velocityPidDownWheel.getValue()));
+    debugDesiredLeft = desiredRpmRampLeft.getValue();
+    debugDesiredRight = desiredRpmRampRight.getValue();
+    debugDesiredDown = desiredRpmRampDown.getValue();
+    debugWheelLeft = getWheelRPM(&leftWheel);
+    debugWheelRight = getWheelRPM(&rightWheel);
+    debugWheelDown = getWheelRPM(&downWheel);
 }
 }  // namespace src::control::flywheel
 
