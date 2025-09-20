@@ -12,7 +12,6 @@
 #include "control/flywheel/flywheel_constants.hpp"
 #include "modm/math/filter/pid.hpp"
 
-
 namespace src::control::flywheel
 {
 class FlywheelSubsystem : public tap::control::Subsystem
@@ -26,10 +25,6 @@ public:
         tap::can::CanBus canBus);
 
     void initialize() override;
-
-    mockable void setDesiredSpin(u_int16_t spin);
-
-    mockable float getDesiredSpin() const { return desiredSpin; }
 
     mockable void setDesiredLaunchSpeed(float speed);
 
@@ -81,9 +76,6 @@ private:
     float desiredLaunchSpeedRight;
     float desiredLaunchSpeedDown;
 
-    Spin desiredSpin = SPIN_100;
-    u_int16_t desiredSpinValue = 100;  // percent of spin
-
     uint32_t prevTime = 0;
 
     tap::algorithms::Ramp desiredRpmRampLeft;
@@ -100,8 +92,6 @@ private:
     {
         return motor->getEncoder()->getVelocity() * 60.0f / M_TWOPI;
     }
-
-    std::array<std::array<modm::Pair<float, float>, 5>, SPIN_COUNT> spinToRPMMap;
 };
 
 }  // namespace src::control::flywheel

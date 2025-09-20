@@ -11,7 +11,6 @@ FlywheelRunCommand::FlywheelRunCommand(FlywheelSubsystem *flywheel) : flywheel(f
 
 void FlywheelRunCommand::initialize()
 {
-    flywheel->setDesiredSpin(90);
     flywheel->setDesiredLaunchSpeed(20.7);  // 24.5
 }
 

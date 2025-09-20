@@ -18,7 +18,6 @@ FlywheelSubsystem::FlywheelSubsystem(
     tap::motor::MotorId downMotorId,
     tap::can::CanBus canBus)
     : tap::control::Subsystem(drivers),
-      spinToRPMMap(SPIN_TO_INTERPOLATABLE_MPS_TO_RPM),
       velocityPidLeftWheel(
           FLYWHEEL_PID_KP,
           FLYWHEEL_PID_KI,
@@ -55,21 +54,11 @@ void FlywheelSubsystem::initialize()
     prevTime = tap::arch::clock::getTimeMilliseconds();
 }
 
-void FlywheelSubsystem::setDesiredSpin(u_int16_t spin)
-{
-    if (auto spinSet = toSpinPreset(spin))
-    {
-        desiredSpin = spinSet.value();
-        desiredSpinValue = spin;
-    }
-}
-
 void FlywheelSubsystem::setDesiredLaunchSpeed(float speed)
 {
     desiredLaunchSpeedLeft = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
     desiredLaunchSpeedRight = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
-    desiredLaunchSpeedDown =
-        limitVal(speed * (desiredSpinValue / 100.0f), 0.0f, MAX_DESIRED_LAUNCH_SPEED);  // uses spin
+    desiredLaunchSpeedDown = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
 
     desiredRpmRampLeft.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedLeft));
     desiredRpmRampRight.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedRight));
@@ -78,11 +67,9 @@ void FlywheelSubsystem::setDesiredLaunchSpeed(float speed)
 
 float FlywheelSubsystem::launchSpeedToFlywheelRpm(float launchSpeed) const
 {
-    modm::interpolation::Linear<modm::Pair<float, float>> MPSToRPMInterpolator = {
-        spinToRPMMap.at(desiredSpin).data(),
-        spinToRPMMap.at(desiredSpin).size()};
-    return MPSToRPMInterpolator.interpolate(launchSpeed);
+    return launchSpeed / (WHEEL_DIAMETER * M_PI) * 60;
 }
+
 float debugWheelLeft = 0;
 float debugWheelRight = 0;
 float debugWheelDown = 0;
