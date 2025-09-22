@@ -63,8 +63,9 @@ namespace src::chassis
     initializer list, the body of the constructor is empty, which is perfectly normal.
 */
 
-//STEP 1-4 HERE
+// STEP 1-4 HERE
 
+ChassisSubsystem::ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config) {}
 
 void ChassisSubsystem::initialize()
 {
@@ -107,7 +108,7 @@ void ChassisSubsystem::initialize()
    MotorId enum to determine what motor is what index. After you set all 4 indexes you are done, the
    motors will be told these values in the refresh method.
 */
-//STEP 5 HERE
+// STEP 5 HERE
 
 /*
    STEP 6: setVelocityFieldDrive METHOD
@@ -119,7 +120,7 @@ void ChassisSubsystem::initialize()
    driveBasedOnHeading with the all the values it needs.
 
 */
-//STEP 6 HERE
+// STEP 6 HERE
 
 /* STEP 7: REFRESH METHOD
 
@@ -148,7 +149,7 @@ void ChassisSubsystem::refresh()
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
 } Uncoment this block
-*/ 
+*/
 }  // namespace src::chassis
 
 #endif
