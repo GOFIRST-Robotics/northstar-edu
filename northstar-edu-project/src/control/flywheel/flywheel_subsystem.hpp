@@ -21,7 +21,6 @@ public:
         tap::Drivers *drivers,
         tap::motor::MotorId leftMotorId,
         tap::motor::MotorId rightMotorId,
-        tap::motor::MotorId downMotorId,
         tap::can::CanBus canBus);
 
     void initialize() override;
@@ -30,7 +29,6 @@ public:
 
     mockable float getDesiredLaunchSpeedLeft() const { return desiredLaunchSpeedLeft; }
     mockable float getDesiredLaunchSpeedRight() const { return desiredLaunchSpeedRight; }
-    mockable float getDesiredLaunchSpeedDown() const { return desiredLaunchSpeedDown; }
 
     mockable float getDesiredFlywheelSpeedLeft() const
     {
@@ -40,16 +38,10 @@ public:
     {
         return launchSpeedToFlywheelRpm(desiredLaunchSpeedRight);
     }
-    mockable float getDesiredFlywheelSpeedDown() const
-    {
-        return launchSpeedToFlywheelRpm(desiredLaunchSpeedDown);
-    }
 
     float getCurrentLeftFlywheelMotorRPM() const { return getWheelRPM(&leftWheel); }
 
     float getCurrentRightFlywheelMotorRPM() const { return getWheelRPM(&rightWheel); }
-
-    float getCurrentDownFlywheelMotorRPM() const { return getWheelRPM(&downWheel); }
 
     void refresh() override;
 
@@ -57,7 +49,6 @@ public:
     {
         leftWheel.setDesiredOutput(0);  // TODO CHANGE
         rightWheel.setDesiredOutput(0);
-        downWheel.setDesiredOutput(0);
     }
 
     const char *getName() const override { return "Flywheels"; }
@@ -70,21 +61,17 @@ protected:
 private:
     modm::Pid<float> velocityPidLeftWheel;
     modm::Pid<float> velocityPidRightWheel;
-    modm::Pid<float> velocityPidDownWheel;
 
     float desiredLaunchSpeedLeft;
     float desiredLaunchSpeedRight;
-    float desiredLaunchSpeedDown;
 
     uint32_t prevTime = 0;
 
     tap::algorithms::Ramp desiredRpmRampLeft;
     tap::algorithms::Ramp desiredRpmRampRight;
-    tap::algorithms::Ramp desiredRpmRampDown;
 
     tap::motor::DjiMotor leftWheel;
     tap::motor::DjiMotor rightWheel;
-    tap::motor::DjiMotor downWheel;
 
     float launchSpeedToFlywheelRpm(float launchSpeed) const;
 
