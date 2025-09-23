@@ -59,6 +59,45 @@ After you are done with this step, you should repeat task 3 and 4 for the fly sk
 operator interface.
 */
 
+float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
+{
+    float output = 0.0f;
+
+    if (remote.keyPressed(Remote::Key::D))
+    {
+        output += 1.0f;
+    }
+    else if (remote.keyPressed(Remote::Key::A))
+    {
+        output -= 1.0f;
+    }
+
+    output += remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+    return limitVal<float>(output, -1.0f, 1.0f);
+}
+
+float ControlOperatorInterface::getDrivetrainVerticalTranslation()
+{
+    float output = 0.0f;
+
+    if (remote.keyPressed(Remote::Key::W))
+    {
+        output += 1.0f;
+    }
+    else if (remote.keyPressed(Remote::Key::S))
+    {
+        output -= 1.0f;
+    }
+
+    output += remote.getChannel(Remote::Channel::LEFT_VERTICAL);
+    return limitVal<float>(output, -1.0f, 1.0f);
+}
+
+float ControlOperatorInterface::getDrivetrainRotationalTranslation()
+{
+    return remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * PI;
+}
+
 }  // namespace control
 
 }  // namespace src

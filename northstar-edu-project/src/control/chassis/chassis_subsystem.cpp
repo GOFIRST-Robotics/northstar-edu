@@ -63,8 +63,42 @@ namespace src::chassis
     initializer list, the body of the constructor is empty, which is perfectly normal.
 */
 
-//STEP 1-4 HERE
-
+ChassisSubsystem::ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config)
+    : Subsystem(drivers),
+      desiredOutput{},
+      pidControllers{
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT)},
+      motors{
+          Motor(drivers, config.leftFrontId, config.canBus, false, "LeftFront"),
+          Motor(drivers, config.leftBackId, config.canBus, false, "LeftBack"),
+          Motor(drivers, config.rightFrontId, config.canBus, false, "RightFront"),
+          Motor(drivers, config.rightBackId, config.canBus, false, "RightBack"),
+      }
+{
+}
 
 void ChassisSubsystem::initialize()
 {
@@ -107,7 +141,37 @@ void ChassisSubsystem::initialize()
    MotorId enum to determine what motor is what index. After you set all 4 indexes you are done, the
    motors will be told these values in the refresh method.
 */
-//STEP 5 HERE
+
+void ChassisSubsystem::driveBasedOnHeading(
+    double heading,
+    double forwardVelocity,
+    double sidewaysVelocity,
+    double rotationalVelocity)
+{
+    double xLocal = forwardVelocity * cos(heading) + sidewaysVelocity * sin(heading);
+    double yLocal = -forwardVelocity * sin(heading) + sidewaysVelocity * cos(heading);
+
+    double sqrt2 = sqrt(2.0);
+
+    double leftFrontMPS = (xLocal - yLocal) / sqrt2 + (rotationalVelocity)*DIST_TO_CENTER * sqrt2;
+    double rightFrontMPS = (-xLocal - yLocal) / sqrt2 + (rotationalVelocity)*DIST_TO_CENTER * sqrt2;
+    double rightBackMPS = (-xLocal + yLocal) / sqrt2 + (rotationalVelocity)*DIST_TO_CENTER * sqrt2;
+    double leftBackMPS = (xLocal + yLocal) / sqrt2 + (rotationalVelocity)*DIST_TO_CENTER * sqrt2;
+
+    double leftFrontRPM_Limited =
+        limitVal<float>(mpsToRpm(leftFrontMPS), -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+    double rightFrontRPM_Limited =
+        limitVal<float>(mpsToRpm(rightFrontMPS), -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+    double rightBackRPM_Limited =
+        limitVal<float>(mpsToRpm(rightBackMPS), -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+    double leftBackRPM_Limited =
+        limitVal<float>(mpsToRpm(leftBackMPS), -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+
+    desiredOutput[0] = leftFrontRPM_Limited;
+    desiredOutput[1] = leftBackRPM_Limited;
+    desiredOutput[2] = rightFrontRPM_Limited;
+    desiredOutput[3] = rightBackRPM_Limited;
+}
 
 /*
    STEP 6: setVelocityFieldDrive METHOD
@@ -119,11 +183,22 @@ void ChassisSubsystem::initialize()
    driveBasedOnHeading with the all the values it needs.
 
 */
-//STEP 6 HERE
+
+void ChassisSubsystem::setVelocityFieldDrive(
+    double forwardVelocity,
+    double sidewaysVelocity,
+    double rotationalVelocity)
+{
+    driveBasedOnHeading(
+        drivers->bmi088.getYaw(),
+        forwardVelocity,
+        sidewaysVelocity,
+        rotationalVelocity);
+}
 
 /* STEP 7: REFRESH METHOD
 
-Here is the refresh method, go through is and try to understand what is happening.
+Here is the refresh method, go through is and try to understand what is happening. */
 
 void ChassisSubsystem::refresh()
 {
@@ -147,8 +222,8 @@ void ChassisSubsystem::refresh()
             desiredOutput[ii],
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
-} Uncoment this block
-*/ 
+}
+
 }  // namespace src::chassis
 
 #endif

@@ -24,11 +24,15 @@ public:
     ControlOperatorInterface(tap::Drivers *drivers) : remote(drivers->remote) {}
 
     /* Chassis Task 5: ADD METHODS FOR
-    
+
         -getDrivetrainHorizontalTranslation
         -getDrivetrainVerticalTranslation
         -getDrivetrainRotationalTranslation
     Here */
+
+    float getDrivetrainHorizontalTranslation();
+    float getDrivetrainVerticalTranslation();
+    float getDrivetrainRotationalTranslation();
 
 private:
     tap::communication::serial::FlySky &remote;

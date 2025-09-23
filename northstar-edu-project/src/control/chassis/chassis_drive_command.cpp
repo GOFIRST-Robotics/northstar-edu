@@ -32,9 +32,39 @@ Make the end method set the
 chassis velocity to 0 for all parameters.
 */
 
-// STEP 1 HERE
+ChassisDriveCommand::ChassisDriveCommand(
+    ChassisSubsystem* chassisSubsystem_,
+    src::control::ControlOperatorInterface* controlOperatorInterface_)
+    : chassisSubsystem(chassisSubsystem_),
+      controlOperatorInterface(controlOperatorInterface_)
+{
+    addSubsystemRequirement(chassisSubsystem);
+}
 
-// STEP 2 HERE
+void ChassisDriveCommand::execute()
+{
+    float desiredHorizontalVelocity =
+        limitVal<float>(
+            controlOperatorInterface->getDrivetrainHorizontalTranslation(),
+            -1.0f,
+            1.0f) *
+        MAX_CHASSIS_SPEED_MPS;
+    float desiredVerticalVelocity =
+        limitVal<float>(controlOperatorInterface->getDrivetrainVerticalTranslation(), -1.0f, 1.0f) *
+        MAX_CHASSIS_SPEED_MPS;
+    float desiredRotationalVelocity =
+        controlOperatorInterface->getDrivetrainRotationalTranslation();
+
+    chassisSubsystem->setVelocityFieldDrive(
+        desiredVerticalVelocity,
+        desiredHorizontalVelocity,
+        desiredRotationalVelocity);
+}
+
+void ChassisDriveCommand::end(bool interrupted)
+{
+    chassisSubsystem->setVelocityFieldDrive(0, 0, 0);
+}
 
 };  // namespace src::chassis
 

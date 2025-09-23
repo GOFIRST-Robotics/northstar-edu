@@ -31,11 +31,13 @@ public:
     called MAX_CHASSIS_SPEED_MPS and set it to 4.0f.
     */
 
-    // STEP 1 HERE
+    ChassisDriveCommand(
+        ChassisSubsystem* chassisSubsystem_,
+        src::control::ControlOperatorInterface* controlOperatorInterface_);
 
     // STEP 2 HERE
 
-    const char *getName() const override { return "Chassis tank drive"; }
+    const char* getName() const override { return "Chassis tank drive"; }
 
     void initialize() override {}
 
@@ -46,6 +48,9 @@ public:
     bool isFinished() const { return false; }
 
 private:
-    // STEP 1 HERE - Make member variables for the pointers.
+    static constexpr float MAX_CHASSIS_SPEED_MPS = 4.0f;
+
+    ChassisSubsystem* chassisSubsystem;
+    src::control::ControlOperatorInterface* controlOperatorInterface;
 };
 }  // namespace src::chassis

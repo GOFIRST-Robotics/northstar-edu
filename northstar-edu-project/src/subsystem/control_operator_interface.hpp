@@ -52,6 +52,10 @@ class ControlOperatorInterface
 public:
     ControlOperatorInterface(tap::Drivers *drivers) : remote(drivers->remote) {}
 
+    float getDrivetrainHorizontalTranslation();
+    float getDrivetrainVerticalTranslation();
+    float getDrivetrainRotationalTranslation();
+
 private:
     tap::communication::serial::Remote &remote;
 };
