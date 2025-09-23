@@ -4,17 +4,10 @@
 
 namespace src::control::flywheel
 {
-FlywheelRunCommand::FlywheelRunCommand(FlywheelSubsystem *flywheel) : flywheel(flywheel)
-{
-    addSubsystemRequirement(flywheel);
-}
-
-void FlywheelRunCommand::initialize()
-{
-    flywheel->setDesiredLaunchSpeed(20.7);  // 24.5
-}
-
-void FlywheelRunCommand::end(bool interrupted) { flywheel->setDesiredLaunchSpeed(0); }
+/* Flywheel task 4
+STEP 1: ADD CONSTRUCTOR INIT LIST AND METHODS:
+good luck :)
+*/
 
 }  // namespace src::control::flywheel
 
