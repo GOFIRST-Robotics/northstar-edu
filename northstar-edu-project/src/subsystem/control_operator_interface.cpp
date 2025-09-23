@@ -53,7 +53,8 @@ An example of key input is remote.keyPressed(Remote::Key::S)
 Take note that the values for key presses are 0 for not pressed and 1 for pressed. Vertical and
 horizontal channels are percent output with 1.0f being 100% and -1.0f being 100% in the opposite
 direction. For rotational output, the method needs to return a radians per second. A good way to
-implement this is to multiply the output from the controller by a max speed
+implement this is to multiply the output from the controller by a max speed. You will get the
+rotational input from Remote::Channel::WHEEL.
 
 After you are done with this step, you should repeat task 3 and 4 for the fly sky remote
 operator interface.
