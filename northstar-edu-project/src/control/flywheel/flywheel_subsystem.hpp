@@ -17,68 +17,69 @@ namespace src::control::flywheel
 class FlywheelSubsystem : public tap::control::Subsystem
 {
 public:
-    FlywheelSubsystem(
-        tap::Drivers *drivers,
-        tap::motor::MotorId leftMotorId,
-        tap::motor::MotorId rightMotorId,
-        tap::can::CanBus canBus);
+    /* Flywheel task 1
+    STEP 1: DECLARE THE CONSTRUCTOR
+    Name needs to be same as class name, and needs to take in a drivers pointer and a left and right
+    motor Id of type tap::motor::MotorId
+    */
 
-    void initialize() override;
+    // void initialize() override; UNCOMMENT THIS
 
-    mockable void setDesiredLaunchSpeed(float speed);
+    /* STEP 2: DECLARE METHODS
+    Flywheel subsystem needs a setter for a desired launch speed, and setters for Flywheel speeds.
+    Launch speed should be in m/s and flywheel speeds should be in rpm. This means we need a
+    method that can convert m/s to rpm. Simple methods like that can be implemented right in the
+    .hpp file. We also need to be able to get the current rpm of each motor.
 
-    mockable float getDesiredLaunchSpeedLeft() const { return desiredLaunchSpeedLeft; }
-    mockable float getDesiredLaunchSpeedRight() const { return desiredLaunchSpeedRight; }
+    So here are the methods you need to define:
+        set launch speed with a mps.
 
-    mockable float getDesiredFlywheelSpeedLeft() const
-    {
-        return launchSpeedToFlywheelRpm(desiredLaunchSpeedLeft);
-    }
-    mockable float getDesiredFlywheelSpeedRight() const
-    {
-        return launchSpeedToFlywheelRpm(desiredLaunchSpeedRight);
-    }
+        get desired launch speed. One for each motor since when you implement the setter it will
+        independently set left and right.
 
-    float getCurrentLeftFlywheelMotorRPM() const { return getWheelRPM(&leftWheel); }
+        PRIVATE launch speed to flywheel rpm. you can use the WHEEL_DIAMETER constant defined in
+        "control/flywheel/flywheel_constants.hpp"
 
-    float getCurrentRightFlywheelMotorRPM() const { return getWheelRPM(&rightWheel); }
+        getters for desired flywheel speed. these can use the stored desired m/s and call the launch
+        speed to flywheel rpm method.
+
+        get current flywheel rpm for each motor. use getWheelRPM(const tap::motor::DjiMotor *motor)
+        that you will define in step 3.
+
+        PRIVATE get wheel rpm which takes in a motor pointer and returns the rpm. Use this return
+        motor->getEncoder()->getVelocity() * 60.0f / M_TWOPI; this can be implemented in the .hpp
+    */
 
     void refresh() override;
 
     void refreshSafeDisconnect() override
     {
-        leftWheel.setDesiredOutput(0);  // TODO CHANGE
+        leftWheel.setDesiredOutput(0);
         rightWheel.setDesiredOutput(0);
     }
 
     const char *getName() const override { return "Flywheels"; }
 
 protected:
-    static constexpr float MAX_DESIRED_LAUNCH_SPEED = 10000;  // TODO
+    static constexpr float MAX_DESIRED_LAUNCH_SPEED = 25;
 
     tap::Drivers *drivers;
 
 private:
-    modm::Pid<float> velocityPidLeftWheel;
-    modm::Pid<float> velocityPidRightWheel;
+    /* STEP 3: DEFINE PRIVATE GLOBAL VARIABLES
+    we need a pid object for each motor the type is modm::Pid<float>
 
-    float desiredLaunchSpeedLeft;
-    float desiredLaunchSpeedRight;
+    floats to store the desired launch speeds.
 
+    two tap::algorithms::Ramp objects to ramp up the flywheels
+
+    a tap::motor::DjiMotor for each motor
+
+
+    */
     uint32_t prevTime = 0;
 
-    tap::algorithms::Ramp desiredRpmRampLeft;
-    tap::algorithms::Ramp desiredRpmRampRight;
-
-    tap::motor::DjiMotor leftWheel;
-    tap::motor::DjiMotor rightWheel;
-
-    float launchSpeedToFlywheelRpm(float launchSpeed) const;
-
-    float getWheelRPM(const tap::motor::DjiMotor *motor) const
-    {
-        return motor->getEncoder()->getVelocity() * 60.0f / M_TWOPI;
-    }
+    // put PRIVATE methods here
 };
 
 }  // namespace src::control::flywheel
