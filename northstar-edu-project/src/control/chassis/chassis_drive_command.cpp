@@ -33,9 +33,23 @@ chassis velocity to 0 for all parameters.
 */
 
 // STEP 1 HERE
-
+ChassisDriveCommand::ChassisDriveCommand(
+    ChassisSubsystem* subsystem,
+    control::ControlOperatorInterface* interface)
+    : m_subsystem{subsystem},
+      m_interface{interface}
+{
+}
 // STEP 2 HERE
+void ChassisDriveCommand::execute()
+{
+    float x = m_interface->getDrivetrainHorizontalTranslation() * MAX_CHASSIS_SPEED_MPS;
+    float y = m_interface->getDrivetrainVerticalTranslation() * MAX_CHASSIS_SPEED_MPS;
+    float r = m_interface->getDrivetrainRotationalTranslation() * MAX_CHASSIS_SPEED_MPS;
+    m_subsystem->setVelocityFieldDrive(x, y, r);
+}
 
+void ChassisDriveCommand::end(bool interrupted) { m_subsystem->setVelocityFieldDrive(0, 0, 0); }
 };  // namespace src::chassis
 
 #endif

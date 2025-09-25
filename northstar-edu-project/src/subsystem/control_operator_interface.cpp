@@ -58,7 +58,26 @@ implement this is to multiply the output from the controller by a max speed
 After you are done with this step, you should repeat task 3 and 4 for the fly sky remote
 operator interface.
 */
-
+float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
+{
+    float out{};
+    out += remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+    out += static_cast<float>(remote.keyPressed(Remote::Key::W));
+    out += -static_cast<float>(remote.keyPressed(Remote::Key::S));
+    return limitVal<float>(out, -1, 1);
+}
+float ControlOperatorInterface::getDrivetrainVerticalTranslation()
+{
+    float out{};
+    out += remote.getChannel(Remote::Channel::LEFT_VERTICAL);
+    out += static_cast<float>(remote.keyPressed(Remote::Key::A));
+    out += -static_cast<float>(remote.keyPressed(Remote::Key::D));
+    return limitVal<float>(out, -1, 1);
+}
+float ControlOperatorInterface::getDrivetrainRotationalTranslation()
+{
+    return limitVal<float>(M_PI * remote.getChannel(Remote::Channel::WHEEL), -M_PI, M_PI);
+}
 }  // namespace control
 
 }  // namespace src

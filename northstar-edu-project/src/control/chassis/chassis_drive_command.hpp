@@ -32,10 +32,10 @@ public:
     */
 
     // STEP 1 HERE
-
+    ChassisDriveCommand(ChassisSubsystem* subsystem, control::ControlOperatorInterface* interface);
     // STEP 2 HERE
-
-    const char *getName() const override { return "Chassis tank drive"; }
+    static constexpr float MAX_CHASSIS_SPEED_MPS{4.0f};
+    const char* getName() const override { return "Chassis tank drive"; }
 
     void initialize() override {}
 
@@ -47,5 +47,7 @@ public:
 
 private:
     // STEP 1 HERE - Make member variables for the pointers.
+    ChassisSubsystem* m_subsystem{};
+    control::ControlOperatorInterface* m_interface{};
 };
 }  // namespace src::chassis

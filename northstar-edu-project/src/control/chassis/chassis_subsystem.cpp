@@ -65,7 +65,41 @@ namespace src::chassis
 
 // STEP 1-4 HERE
 
-ChassisSubsystem::ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config) {}
+ChassisSubsystem::ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config)
+    : Subsystem(drivers),
+      desiredOutput{},
+      pidControllers{
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT)},
+      motors{
+          Motor(drivers, config.leftBackId, config.canBus, false, "LB"),
+          Motor(drivers, config.leftFrontId, config.canBus, false, "LF"),
+          Motor(drivers, config.rightBackId, config.canBus, false, "RB"),
+          Motor(drivers, config.rightFrontId, config.canBus, false, "RF")}
+{
+}
 
 void ChassisSubsystem::initialize()
 {
@@ -109,7 +143,28 @@ void ChassisSubsystem::initialize()
    motors will be told these values in the refresh method.
 */
 // STEP 5 HERE
+void ChassisSubsystem::driveBasedOnHeading(float x, float y, float r, float heading)
+{
+    float x_local{x * cos(heading) + y * sin(heading)};
+    float y_local{-x * sin(heading) + y * cos(heading)};
+    float left_front{(x_local - y_local) / M_SQRT2 + r * DIST_TO_CENTER * M_SQRT2};
+    float right_front{(-x_local - y_local) / M_SQRT2 + r * DIST_TO_CENTER * M_SQRT2};
+    float right_back{(-x_local + y_local) / M_SQRT2 + r * DIST_TO_CENTER * M_SQRT2};
+    float left_back{(x_local + y_local) / M_SQRT2 + r * DIST_TO_CENTER * M_SQRT2};
+    float left_front_rpm{mpsToRpm(left_front)};
+    float right_front_rpm{mpsToRpm(right_front)};
+    float right_back_rpm{mpsToRpm(right_back)};
+    float left_back_rpm{mpsToRpm(left_back)};
 
+    desiredOutput[static_cast<uint8_t>(MotorId::LF)] =
+        limitVal<float>(left_front_rpm, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+    desiredOutput[static_cast<uint8_t>(MotorId::RF)] =
+        limitVal<float>(right_front_rpm, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+    desiredOutput[static_cast<uint8_t>(MotorId::RB)] =
+        limitVal<float>(right_back_rpm, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+    desiredOutput[static_cast<uint8_t>(MotorId::LB)] =
+        limitVal<float>(left_back_rpm, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+}
 /*
    STEP 6: setVelocityFieldDrive METHOD
 
@@ -121,11 +176,14 @@ void ChassisSubsystem::initialize()
 
 */
 // STEP 6 HERE
-
+void ChassisSubsystem::setVelocityFieldDrive(float x, float y, float r)
+{
+    driveBasedOnHeading(x, y, r, drivers->bmi088.getYaw());
+}
 /* STEP 7: REFRESH METHOD
 
 Here is the refresh method, go through is and try to understand what is happening.
-
+*/
 void ChassisSubsystem::refresh()
 {
     auto runPid = [](Pid& pid,
@@ -148,8 +206,8 @@ void ChassisSubsystem::refresh()
             desiredOutput[ii],
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
-} Uncoment this block
-*/
+}  // Uncomment this block
+
 }  // namespace src::chassis
 
 #endif

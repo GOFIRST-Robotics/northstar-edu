@@ -22,6 +22,20 @@ namespace control
 For the translation methods here, dont worry about keyboard input. An example of accessing a channel
 would be remote.getChannel(FlySky::Channel::LEFT_HORIZONTAL)
 */
+float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
+{
+    return limitVal<float>(remote.getChannel(FlySky::Channel::LEFT_HORIZONTAL), -1, 1);
+}
+
+float ControlOperatorInterface::getDrivetrainVerticalTranslation()
+{
+    return limitVal<float>(remote.getChannel(FlySky::Channel::LEFT_VERTICAL), -1, 1);
+}
+
+float ControlOperatorInterface::getDrivetrainRotationalTranslation()
+{
+    return limitVal<float>(remote.getChannel(FlySky::Channel::WHEEL_A) * M_PI, -M_PI, M_PI);
+}
 
 }  // namespace control
 
