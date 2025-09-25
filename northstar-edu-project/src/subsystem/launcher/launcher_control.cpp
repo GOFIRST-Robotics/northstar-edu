@@ -47,7 +47,7 @@ driversFunc drivers = DoNotUse_getDrivers;
 namespace launcher_control
 {
 // flywheel subsystem
-FlywheelSubsystem flywheel(drivers(), LEFT_MOTOR_ID, RIGHT_MOTOR_ID, UP_MOTOR_ID, CAN_BUS);
+FlywheelSubsystem flywheel(drivers(), LEFT_MOTOR_ID, RIGHT_MOTOR_ID, CAN_BUS);
 
 // flywheel commands
 FlywheelRunCommand flywheelRunCommand(&flywheel);

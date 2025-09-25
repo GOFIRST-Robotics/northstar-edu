@@ -12,7 +12,7 @@ using tap::algorithms::limitVal;
 
 namespace src::chassis
 {
-/* Chassis Task 6:
+/* Chassis Task 8:
 
 STEP 1: DEFINE THE CONSTRUCTOR
 Make the constuctor for this class. Use an initializer list again to set the member variables.
