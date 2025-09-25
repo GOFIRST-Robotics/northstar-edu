@@ -45,7 +45,7 @@ public:
     This class extends the MoveIntegralCommand class. Look through it and understand what is going
     on. Then Understand what is going on in the cpp file. With integrableSetpointSubsystem we are
     able to move the agitator by small amounts to accomplish shooting and unjamming. Since we need a
-    way to swithc between them we use a move_unjam_integral_comprised_command which switches between
+    way to switch between them we use a move_unjam_integral_comprised_command which switches between
     the two commands by scheduling them when necessary. Look through that command and understand how
     it works. Then be ready to implement it with the two commands here and the subsystem in a
     control file.
