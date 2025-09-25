@@ -24,11 +24,6 @@ class Drivers;
 
 namespace src::agitator
 {
-/**
- * Subsystem whose primary purpose is to encapsulate an agitator motor that operates using a
- * velocity controller. Also keeps track of absolute position to allow commands to rotate the
- * agitator some specific displacement.
- */
 class VelocityAgitatorSubsystem : public tap::control::setpoint::IntegrableSetpointSubsystem
 {
 public:
@@ -38,19 +33,26 @@ public:
     static constexpr float AGITATOR_GEAR_RATIO_M2006 = 36.0f;
     static constexpr float AGITATOR_GEAR_RATIO_GM3508 = (3591.0f / 187.0f);
 
-    /**
-     * Construct an agitator with the passed in velocity PID parameters, gear ratio, and
-     * agitator-specific configuration.
-     *
-     * @param[in] drivers pointer to src drivers struct
-     * @param[in] pidParams Position PID configuration struct for the agitator motor controller.
-     * @param[in] agitatorSubsystemConfig Agitator configuration struct that contains
-     * agitator-specific parameters including motor ID and unjam parameters.
-     */
-    VelocityAgitatorSubsystem(
-        tap::Drivers* drivers,
-        const tap::algorithms::SmoothPidConfig& pidParams,
-        const VelocityAgitatorSubsystemConfig& agitatorSubsystemConfig);
+    /* Agitator task 1
+
+    STEP 1: DEFINE THE CONSTRUCTOR
+    This constructor will need three parameters:
+        -A pointer to the shared tap::Drivers object
+        -A constant reference to a tap::algorithms::SmoothPidConfig object for the velocity PID
+    controller -A constant reference to a VelocityAgitatorSubsystemConfig object for the agitator
+    configuration
+
+    STEP 2: SET REFRESHSAFEDISCONNECT
+    This method is called when the remote isnt connected. In here you should set the agitator motor
+    output to 0 and set the subsystemJamStatus to false. This will make sure the agitator stops
+    moving.
+
+    STEP 3: LOOK THROUGH THE REST
+    Look through the rest of the class and try to understand what is going on. Also go ahead and
+    look at tbe jamChecker Object and see what it does. You will need to use it later.
+    */
+
+    // STEP 1 HERE
 
     void initialize() override;
 
@@ -58,8 +60,7 @@ public:
 
     void refreshSafeDisconnect() override
     {
-        subsystemJamStatus = false;
-        agitatorMotor.setDesiredOutput(0);
+        // STEP 2 HERE
     }
 
     const char* getName() const override { return "velocity agitator"; }
@@ -160,14 +161,7 @@ private:
     /// Runes the velocity PID controller
     void runVelocityPidControl();
 
-#if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
-public:
-    testing::NiceMock<tap::mock::DjiMotorMock> agitatorMotor;
-
-private:
-#else
     tap::motor::DjiMotor agitatorMotor;
-#endif
 };
 
 }  // namespace src::agitator

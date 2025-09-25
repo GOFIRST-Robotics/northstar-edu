@@ -37,6 +37,12 @@ namespace src::control::agitator
 
 class ConstantVelocityAgitatorCommand : public tap::control::setpoint::MoveIntegralCommand
 {
+    /*
+    Agitator Task 3:
+    STEP 1: LOOK THROUGH THE CLASS
+    This class extends the MoveIntegralCommand class. Look through it and understand what is going
+    on. Then write a brief description of what the methods do below.
+    */
 public:
     ConstantVelocityAgitatorCommand(
         tap::control::setpoint::IntegrableSetpointSubsystem& integrableSetpointSubsystem,
