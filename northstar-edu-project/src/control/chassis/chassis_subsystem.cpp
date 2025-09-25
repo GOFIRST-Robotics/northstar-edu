@@ -65,6 +65,22 @@ namespace src::chassis
 
 //STEP 1-4 HERE
 
+ChassisSubsystem::ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config)
+    : Subsystem(drivers),
+      desiredOutput{},
+      pidControllers{modm::Pid<float>(config.wheelVelocityPidConfig),
+                     modm::Pid<float>(config.wheelVelocityPidConfig),
+                     modm::Pid<float>(config.wheelVelocityPidConfig),
+                     modm::Pid<float>(config.wheelVelocityPidConfig)},
+      motors{Motor(drivers, config.leftFrontId, config.canBus, false, "LF"),
+             Motor(drivers, config.leftBackId, config.canBus, false, "LB"),
+             Motor(drivers, config.rightBackId, config.canBus, true, "RB"),
+             Motor(drivers, config.rightFrontId, config.canBus, true, "RF")},
+      rampControllers{tap::algorithms::Ramp(MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM),
+                     tap::algorithms::Ramp(MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM),
+                     tap::algorithms::Ramp(MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM),
+                     tap::algorithms::Ramp(MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM)}
+{}
 
 void ChassisSubsystem::initialize()
 {
@@ -107,7 +123,6 @@ void ChassisSubsystem::initialize()
    MotorId enum to determine what motor is what index. After you set all 4 indexes you are done, the
    motors will be told these values in the refresh method.
 */
-//STEP 5 HERE
 
 /*
    STEP 6: setVelocityFieldDrive METHOD
