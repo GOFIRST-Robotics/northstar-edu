@@ -46,22 +46,35 @@ driversFunc drivers = DoNotUse_getDrivers;
 
 namespace launcher_control
 {
+    /* Flywheel task 1:
+    STEP 1: CREATE A FLYWHEEL SUBSYSTEM
+    make a flywheel subsystem object using constants from flywheel_constants.hpp
+    for motor ids and can bus.
+    */
 // flywheel subsystem
-FlywheelSubsystem flywheel(drivers(), LEFT_MOTOR_ID, RIGHT_MOTOR_ID, UP_MOTOR_ID, CAN_BUS);
 
+// STEP 2: CREATE FLYWHEELRUNCOMMAND
 // flywheel commands
-FlywheelRunCommand flywheelRunCommand(&flywheel);
 
+/* STEP 3: MAKE COMMAND MAPPING
+Commands can be triggered by remote map states. These are things like a keybind
+or a switch on the remote. A very common mapping is the toggle command mapping.
+This takes in a drivers pointer, a vector of pointers to commands to be run and a RemoteMapState. 
+Example of a remote map state for pressing f: 
+RemoteMapState(RemoteMapState({tap::communication::serial::Remote::Key::F}))
+and for left switch up:
+RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+Make a ToggleCommandMapping for pressing f and one for fliping the left remote switch up. These should run the flywheel run command.
+
+
+*/
 // flywheel mappings
-ToggleCommandMapping fPressedFlywheels(
-    drivers(),
-    {&flywheelRunCommand},
-    RemoteMapState(RemoteMapState({tap::communication::serial::Remote::Key::F})));
 
-ToggleCommandMapping leftSwitchUpFlywheels(
-    drivers(),
-    {&flywheelRunCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+
+
+
 
 // agitator subsystem
 VelocityAgitatorSubsystem agitator(
@@ -94,13 +107,15 @@ HoldRepeatCommandMapping rightSwitchUpShoot(
 
 void initializeSubsystems(Drivers *drivers)
 {
-    flywheel.initialize();
+    // FLYWHEEL STEP 4: INITIALIZE SUBSYSTEM
+
     agitator.initialize();
 }
 
 void registerStandardSubsystems(Drivers *drivers)
 {
-    drivers->commandScheduler.registerSubsystem(&flywheel);
+    // FLYWHEEL STEP 5: REGISTAR SUBSYSTEM 
+
     drivers->commandScheduler.registerSubsystem(&agitator);
 }
 
@@ -114,9 +129,10 @@ void startStandardCommands(Drivers *drivers)
 
 void registerStandardIoMappings(Drivers *drivers)
 {
+    // FLYWHEEL STEP 6: ADD COMMAND MAPPINGS
+    // use drivers->commandMapper.addMap() passing in the pointer to the mapping.
+    
     drivers->commandMapper.addMap(&leftMousePressedShoot);
-    drivers->commandMapper.addMap(&leftSwitchUpFlywheels);
-    drivers->commandMapper.addMap(&fPressedFlywheels);
     drivers->commandMapper.addMap(&rightSwitchUpShoot);
 }
 

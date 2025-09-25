@@ -19,22 +19,29 @@ using namespace tap::motor;
 
 namespace src::agitator
 {
+/* Agitator Task 2
+STEP 1: DEFINE THE CONSTRUCTOR
+Use the constuctor you defined in the .hpp file to create the constructor for the class. You will
+need to use a member initializer list to initialize the parent class and all the member variables.
+STEP 2: EXAMINE THE INITIALIZE AND REFRESH METHODS
+Look at the initialize and refresh methods. Understand whats going on, otherwise ask if you cant.
+STEP 3: FINISH THE CALIBRATE METHOD
+This method should check if the motor is online, if it is not return false. If it is online
+calibrate the motor by resetting the motor encoder value. Then set the agitatorIsCalibrated to true,
+set the velocitySetpoint to 0 and clear the jam status. Finally return true.
+STEP 4: FINISH THE GETCURRENTVALUEINTEGRAL METHOD
+This method should return the unwrapped position of the motor in radians. Do this by getting the
+ecoder object and reading its position. If the agitator is not calibrated, it should return 0.
+STEP 5: LOOK AT THE LAST TWO METHODS
+These methods are used to run the velocity PID and set the velocity setpoint. Look through them
+and understand what is going on. If you have questions ask.
+
+*/
 VelocityAgitatorSubsystem::VelocityAgitatorSubsystem(
-    tap::Drivers* drivers,
-    const tap::algorithms::SmoothPidConfig& pidParams,
-    const VelocityAgitatorSubsystemConfig& agitatorSubsystemConfig)
-    : tap::control::Subsystem(drivers),
-      config(agitatorSubsystemConfig),
-      velocityPid(pidParams),
-      jamChecker(this, config.jammingVelocityDifference, config.jammingTime),
-      agitatorMotor(
-          drivers,
-          config.agitatorMotorId,
-          config.agitatorCanBusId,
-          config.isAgitatorInverted,
-          "agitator motor",
-          false,
-          config.gearRatio)
+    // STEP 1 HERE
+    )
+    :
+
 {
     assert(config.jammingVelocityDifference >= 0);
 }
@@ -66,24 +73,12 @@ void VelocityAgitatorSubsystem::refresh()
 
 bool VelocityAgitatorSubsystem::calibrateHere()
 {
-    if (!isOnline())
-    {
-        return false;
-    }
-    agitatorMotor.getEncoder()->resetEncoderValue();
-    agitatorIsCalibrated = true;
-    velocitySetpoint = 0.0f;
-    clearJam();
-    return true;
+    // STEP 3 HERE
 }
 
 float VelocityAgitatorSubsystem::getCurrentValueIntegral() const
 {
-    if (!agitatorIsCalibrated)
-    {
-        return 0.0f;
-    }
-    return agitatorMotor.getEncoder()->getPosition().getUnwrappedValue();
+    // STEP 4 HERE
 }
 
 void VelocityAgitatorSubsystem::runVelocityPidControl()
