@@ -65,14 +65,14 @@ float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
 
     if (remote.keyPressed(Remote::Key::D))
     {
-        output += 1.0f;
+        output -= 1.0f;
     }
     else if (remote.keyPressed(Remote::Key::A))
     {
-        output -= 1.0f;
+        output += 1.0f;
     }
 
-    output += remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+    output -= remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
     return limitVal<float>(output, -1.0f, 1.0f);
 }
 
