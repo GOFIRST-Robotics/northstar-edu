@@ -19,7 +19,7 @@ class ChassisSubsystem;
 class ChassisDriveCommand : public tap::control::Command
 {
 public:
-    /* Chassis Task 5:
+    /* Chassis Task 7:
     STEP 1: DECLARE THE CONSTRUCTOR SIGNATURE
     The constuctor for this class will need to take in two parameters:
         -A pointer to the ChassisSubsystem object. This will be used to control the chassis.
