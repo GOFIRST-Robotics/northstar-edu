@@ -63,31 +63,42 @@ namespace src::chassis
     initializer list, the body of the constructor is empty, which is perfectly normal.
 */
 
-//STEP 1-4 HERE
+// STEP 1-4 HERE
 
 ChassisSubsystem::ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config)
     : Subsystem(drivers),
       desiredOutput{},
-      pidControllers{modm::Pid<float>(config.wheelVelocityPidConfig),
-                     modm::Pid<float>(config.wheelVelocityPidConfig),
-                     modm::Pid<float>(config.wheelVelocityPidConfig),
-                     modm::Pid<float>(config.wheelVelocityPidConfig)},
-      motors{Motor(drivers, config.leftFrontId, config.canBus, false, "LF"),
-             Motor(drivers, config.leftBackId, config.canBus, false, "LB"),
-             Motor(drivers, config.rightBackId, config.canBus, true, "RB"),
-             Motor(drivers, config.rightFrontId, config.canBus, true, "RF")},
-      rampControllers{tap::algorithms::Ramp(MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM),
-                     tap::algorithms::Ramp(MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM),
-                     tap::algorithms::Ramp(MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM),
-                     tap::algorithms::Ramp(MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM)}
-{}
-
-void ChassisSubsystem::initialize()
+      pidControllers{
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              MAX_WHEELSPEED_RPM),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              MAX_WHEELSPEED_RPM),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              MAX_WHEELSPEED_RPM)},
+      motors{
+          Motor(drivers, config.leftFrontId, config.canBus, false, "LF"),
+          Motor(drivers, config.leftBackId, config.canBus, false, "LB"),
+          Motor(drivers, config.rightBackId, config.canBus, true, "RB"),
+          Motor(drivers, config.rightFrontId, config.canBus, true, "RF")}
 {
-    for (auto& i : motors)
-    {
-        i.initialize();
-    }
 }
 
 /* STEP 5: driveBasedOnHeading METHOD
@@ -123,7 +134,24 @@ void ChassisSubsystem::initialize()
    MotorId enum to determine what motor is what index. After you set all 4 indexes you are done, the
    motors will be told these values in the refresh method.
 */
+void ChassisSubsystem::driveBasedonHeading(float x, float y, float r, float h)
+{
+    float x_local = x * cos(h) + y * sin(h);
+    float y_local = -x * sin(h) + y * cos(h);
+    float left_front = (x_local - y_local) / M_SQRT2 + (r)*DIST_TO_CENTER * M_SQRT2;
+    float right_front = (-x_local - y_local) / M_SQRT2 + (r)*DIST_TO_CENTER * M_SQRT2;
+    float right_back = (-x_local + y_local) / M_SQRT2 + (r)*DIST_TO_CENTER * M_SQRT2;
+    float left_back = (x_local + y_local) / M_SQRT2 + (r)*DIST_TO_CENTER * M_SQRT2;
 
+    desiredOutput[static_cast<uint8_t>(MotorId::LF)] =
+        mpsToRpm(limitVal<float>(left_front, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM));
+    desiredOutput[static_cast<uint8_t>(MotorId::RF)] =
+        mpsToRpm(limitVal<float>(right_front, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM));
+    desiredOutput[static_cast<uint8_t>(MotorId::RB)] =
+        mpsToRpm(limitVal<float>(right_back, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM));
+    desiredOutput[static_cast<uint8_t>(MotorId::LB)] =
+        mpsToRpm(limitVal<float>(left_back, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM));
+}
 /*
    STEP 6: setVelocityFieldDrive METHOD
 
@@ -134,11 +162,14 @@ void ChassisSubsystem::initialize()
    driveBasedOnHeading with the all the values it needs.
 
 */
-//STEP 6 HERE
+// STEP 6 HERE
+void ChassisSubsystem::setVelocityFieldDrive(float x, float y, float r)
+{
+    driveBasedonHeading(x, y, r, drivers->bmi088.getYaw());
+}  // namespace src::chassis
+// STEP 7: REFRESH METHOD
 
-/* STEP 7: REFRESH METHOD
-
-Here is the refresh method, go through is and try to understand what is happening.
+// Here is the refresh method, go through is and try to understand what is happening.
 
 void ChassisSubsystem::refresh()
 {
@@ -162,8 +193,9 @@ void ChassisSubsystem::refresh()
             desiredOutput[ii],
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
-} Uncoment this block
-*/ 
+}
+
+// namespace src::chassis
 }  // namespace src::chassis
 
 #endif

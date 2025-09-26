@@ -1,4 +1,4 @@
-ifdef TARGET_CHASSIS //(un-comment out if running code)
+#ifdef TARGET_CHASSIS  //(un-comment out if running code)
 
 #pragma once
 
@@ -21,7 +21,7 @@ ifdef TARGET_CHASSIS //(un-comment out if running code)
 #include "tap/motor/dji_motor.hpp"
 #endif
 
-namespace src::chassis{
+namespace src::chassis
 {
 struct ChassisConfig
 {
@@ -79,9 +79,15 @@ public:
         -driveBasedOnHeading() which needs the same as the previous method plus a variable
     for the heading
     */
-    void setVelocityFieldDrive(float x,float y,float z); //needs variables for forward sideways and rotational velocities
-    void driveBasedonHeading(float x,float y,float z, float heading); //needs variables for the heading too???
-
+    void setVelocityFieldDrive(
+        float x,
+        float y,
+        float z);  // needs variables for forward sideways and rotational velocities
+    void driveBasedonHeading(
+        float x,
+        float y,
+        float z,
+        float heading);  // needs variables for the heading too???
 
     void initialize() override;
 
@@ -122,22 +128,20 @@ private:
 
         -rampControllers array or tap::algorithms::Ramp objects to limit acceleration on the wheels
     */
-    std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> desiredOutput; 
-    std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> pidControllers;
-    std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> rampControllers;
-     
+    std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> desiredOutput;
+    std::array<Pid, static_cast<uint8_t>(MotorId::NUM_MOTORS)> pidControllers;
+    std::array<tap::algorithms::Ramp, static_cast<uint8_t>(MotorId::NUM_MOTORS)> rampControllers;
 
 protected:
-    /* protected varables are able to be used within the class but not accesable from other classes just like a private var. 
-    but any classes that inherit this class can use protected varables
+    /* protected varables are able to be used within the class but not accesable from other classes
+    just like a private var. but any classes that inherit this class can use protected varables
         -motors array of Motor objects.
 
      */
-    //STEP 3 protected HERE
+    // STEP 3 protected HERE
     std::array<Motor, static_cast<uint8_t>(MotorId::NUM_MOTORS)> motors;
 
 };  // class ChassisSubsystem
 }  // namespace src::chassis
-
 
 #endif

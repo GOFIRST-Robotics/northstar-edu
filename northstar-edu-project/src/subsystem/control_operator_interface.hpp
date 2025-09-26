@@ -47,6 +47,7 @@ In the public section, make three methods that return a float and take no parame
 Take note of the remote object that is a member variable of this class. You will be using this in
 the next task.
 */
+void getDrivetrainHorizontalTranslation();
 class ControlOperatorInterface
 {
 public:
