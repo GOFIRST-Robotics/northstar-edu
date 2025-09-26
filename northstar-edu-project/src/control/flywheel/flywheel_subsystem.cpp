@@ -20,11 +20,37 @@ and right wheels with the perarmiters defined in launcher_flywheel_constants.hpp
 for each wheel. set desired launch speed left and right to 0 as well as desired rpm.
 */
 
+FlywheelSubsystem::FlywheelSubsystem(tap::Drivers *drivers)
+    : Subsystem(drivers),
+      drivers(drivers),
+      motor_Left(tap::motor::DjiMotor(
+          drivers,
+          flywheel::LEFT_MOTOR_ID,
+          flywheel::CAN_BUS,
+          false,
+          "Left Flywheel Motor")),
+      motor_Right(tap::motor::DjiMotor(
+          drivers,
+          flywheel::RIGHT_MOTOR_ID,
+          flywheel::CAN_BUS,
+          false,
+          "Right Flywheel Motor"))
+{
+}
+
 /* STEP 2 CREATE METHODS
 initialize:
 should call the .initialize of the motors and store the prevTime to be used for pid calculations.
 Get time like this tap::arch::clock::getTimeMilliseconds();
 */
+
+void FlywheelSubsystem::initialize()
+{
+    motor_Left.initialize();
+    motor_Right.initialize();
+
+    prevTime = tap::arch::clock::getTimeMilliseconds();
+}
 
 /*
 set desired launch speed:
@@ -32,6 +58,18 @@ needs to set the desired launch speed variable (m/s) for left and right while li
 MAX_DESIRED_LAUNCH_SPEED. Also needs to set the target of the ramp objects to the rpm equivalent of
 the m/s from the launch speed. Use the launch speed to flywheel rpm method you made.
 */
+
+void FlywheelSubsystem::setLaunchSpeedMPS(float desiredSpeed)
+{
+    float clampedSpeed = limitVal<float>(desiredSpeed, 0, MAX_DESIRED_LAUNCH_SPEED);
+
+    desiredLaunchSpeed_Left = clampedSpeed;
+    desiredLaunchSpeed_Right = clampedSpeed;
+
+    float desiredWheelRPM = launchSpeedToFlywheelRPM(clampedSpeed);
+    flywheelRamp_Left.setTarget(desiredWheelRPM);
+    flywheelRamp_Right.setTarget(desiredWheelRPM);
+}
 
 /*
 refresh:
@@ -54,6 +92,26 @@ after that you need to set the output of the motors to the pid output. Use the .
 method from the motor and pass in the pid.getValue().
 Do this for both motors.
 */
+
+void FlywheelSubsystem::refresh()
+{
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    if (prevTime == currTime)
+    {
+        return;
+    }
+    uint32_t deltaTime = currTime - prevTime;
+    prevTime = currTime;
+
+    flywheelRamp_Left.update(FRICTION_WHEEL_RAMP_SPEED * deltaTime);
+    flywheelRamp_Right.update(FRICTION_WHEEL_RAMP_SPEED * deltaTime);
+
+    motorPID_Left.update(flywheelRamp_Left.getValue() - getCurrentFlywheelRPM_Left());
+    motorPID_Right.update(flywheelRamp_Right.getValue() - getCurrentFlywheelRPM_Right());
+
+    motor_Left.setDesiredOutput(motorPID_Left.getValue());
+    motor_Right.setDesiredOutput(motorPID_Right.getValue());
+}
 
 }  // namespace src::control::flywheel
 

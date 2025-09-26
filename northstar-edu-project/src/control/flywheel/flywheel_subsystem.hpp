@@ -7,6 +7,7 @@
 
 #include "tap/algorithms/ramp.hpp"
 #include "tap/control/subsystem.hpp"
+#include "tap/drivers.hpp"
 #include "tap/motor/dji_motor.hpp"
 
 #include "control/flywheel/flywheel_constants.hpp"
@@ -23,7 +24,9 @@ public:
     motor Id of type tap::motor::MotorId
     */
 
-    // void initialize() override; UNCOMMENT THIS
+    FlywheelSubsystem(tap::Drivers *drivers);
+
+    void initialize() override;
 
     /* STEP 2: DECLARE METHODS
     Flywheel subsystem needs a setter for a desired launch speed, and setters for Flywheel speeds.
@@ -50,12 +53,28 @@ public:
         motor->getEncoder()->getVelocity() * 60.0f / M_TWOPI; this can be implemented in the .hpp
     */
 
+    void setLaunchSpeedMPS(float newLaunchSpeedMPS);
+
+    float getLaunchSpeedMPS_Left() { return desiredLaunchSpeed_Left; }
+    float getLaunchSpeedMPS_Right() { return desiredLaunchSpeed_Right; }
+    float getDesiredFlywheelSpeed_Left()
+    {
+        return launchSpeedToFlywheelRPM(desiredLaunchSpeed_Left);
+    }
+    float getDesiredFlywheelSpeed_Right()
+    {
+        return launchSpeedToFlywheelRPM(desiredLaunchSpeed_Right);
+    }
+
+    float getCurrentFlywheelRPM_Left() { return getWheelRPM(&motor_Left); }
+    float getCurrentFlywheelRPM_Right() { return getWheelRPM(&motor_Right); }
+
     void refresh() override;
 
     void refreshSafeDisconnect() override
     {
-        leftWheel.setDesiredOutput(0);
-        rightWheel.setDesiredOutput(0);
+        motor_Left.setDesiredOutput(0);
+        motor_Right.setDesiredOutput(0);
     }
 
     const char *getName() const override { return "Flywheels"; }
@@ -77,9 +96,39 @@ private:
 
 
     */
+    modm::Pid<float> motorPID_Left = modm::Pid<float>(
+        flywheel::FLYWHEEL_PID_KP,
+        flywheel::FLYWHEEL_PID_KI,
+        flywheel::FLYWHEEL_PID_KD,
+        flywheel::FLYWHEEL_PID_MAX_ERROR_SUM,
+        flywheel::FLYWHEEL_PID_MAX_OUTPUT);
+    modm::Pid<float> motorPID_Right = modm::Pid<float>(
+        flywheel::FLYWHEEL_PID_KP,
+        flywheel::FLYWHEEL_PID_KI,
+        flywheel::FLYWHEEL_PID_KD,
+        flywheel::FLYWHEEL_PID_MAX_ERROR_SUM,
+        flywheel::FLYWHEEL_PID_MAX_OUTPUT);
+
+    float desiredLaunchSpeed_Left = 0.0f;
+    float desiredLaunchSpeed_Right = 0.0f;
+
+    tap::algorithms::Ramp flywheelRamp_Left = tap::algorithms::Ramp();
+    tap::algorithms::Ramp flywheelRamp_Right = tap::algorithms::Ramp();
+
+    tap::motor::DjiMotor motor_Left;
+    tap::motor::DjiMotor motor_Right;
+
     uint32_t prevTime = 0;
 
-    // put PRIVATE methods here
+    float launchSpeedToFlywheelRPM(float launchSpeed)
+    {
+        return launchSpeed / (flywheel::WHEEL_DIAMETER * PI);
+    }
+
+    float getWheelRPM(const tap::motor::DjiMotor *motor)
+    {
+        return motor->getEncoder()->getVelocity() * 60.0f / M_TWOPI;
+    }
 };
 
 }  // namespace src::control::flywheel
