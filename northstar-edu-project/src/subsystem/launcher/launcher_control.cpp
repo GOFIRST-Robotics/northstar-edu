@@ -72,47 +72,41 @@ should run the flywheel run command.
 */
 // flywheel mappings
 
-// agitator subsystem
-VelocityAgitatorSubsystem agitator(
-    drivers(),
-    constants::AGITATOR_PID_CONFIG,
-    constants::AGITATOR_CONFIG);
+// AGITATOR WORK HERE
 
-// agitator commands
-ConstantVelocityAgitatorCommand rotateAgitator(agitator, constants::AGITATOR_ROTATE_CONFIG);
+// agitator subsystem HERE
 
-UnjamSpokeAgitatorCommand unjamAgitator(agitator, constants::AGITATOR_UNJAM_CONFIG);
+// agitator commands (ConstantVelocityAgitatorCommand and UnjamSpokeAgitatorCommand with agitator
+// configs in constants)
 
-MoveUnjamIntegralComprisedCommand rotateAndUnjamAgitator(
-    *drivers(),
-    agitator,
-    rotateAgitator,
-    unjamAgitator);
+// make a MoveUnjamIntegralComprisedCommand which takes in both previous commands
 
-HoldRepeatCommandMapping leftMousePressedShoot(
-    drivers(),
-    {&rotateAndUnjamAgitator},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT),
-    false);
+// Below are mappings for the commands, uncomment and finish them
 
-HoldRepeatCommandMapping rightSwitchUpShoot(
-    drivers(),
-    {&rotateAndUnjamAgitator},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    false);
+// HoldRepeatCommandMapping leftMousePressedShoot(
+//     drivers(),
+//     {&<comprised command here>},
+//     RemoteMapState(RemoteMapState::MouseButton::LEFT),
+//     false);
+
+// HoldRepeatCommandMapping rightSwitchUpShoot(
+//     drivers(),
+//     {&<comprised command here>},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+//     false);
 
 void initializeSubsystems(Drivers *drivers)
 {
     // FLYWHEEL STEP 4: INITIALIZE SUBSYSTEM
 
-    agitator.initialize();
+    // Initialize agitator
 }
 
 void registerStandardSubsystems(Drivers *drivers)
 {
     // FLYWHEEL STEP 5: REGISTAR SUBSYSTEM
 
-    drivers->commandScheduler.registerSubsystem(&agitator);
+    // Register agitator
 }
 
 void setDefaultStandardCommands(Drivers *drivers) {}
@@ -128,8 +122,7 @@ void registerStandardIoMappings(Drivers *drivers)
     // FLYWHEEL STEP 6: ADD COMMAND MAPPINGS
     // use drivers->commandMapper.addMap() passing in the pointer to the mapping.
 
-    drivers->commandMapper.addMap(&leftMousePressedShoot);
-    drivers->commandMapper.addMap(&rightSwitchUpShoot);
+    // Add agitator mappings
 }
 
 RemoteSafeDisconnectFunction remoteSafeDisconnectFunction(drivers());
