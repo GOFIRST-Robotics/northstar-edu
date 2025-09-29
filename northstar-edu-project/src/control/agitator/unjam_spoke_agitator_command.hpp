@@ -47,8 +47,7 @@ public:
     able to move the agitator by small amounts to accomplish shooting and unjamming. Since we need a
     way to switch between them we use a move_unjam_integral_comprised_command which switches between
     the two commands by scheduling them when necessary. Look through that command and understand how
-    it works. Then be ready to implement it with the two commands here and the subsystem in a
-    control file.
+    it works. Then go to launcher_control and implement the agitator.
     */
     struct Config
     {
