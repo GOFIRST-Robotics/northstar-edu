@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+#ifdef TARGET_LAUNCHER
+
 #ifndef UNJAM_SPOKE_AGITATOR_COMMAND_HPP_
 #define UNJAM_SPOKE_AGITATOR_COMMAND_HPP_
 
@@ -138,3 +141,5 @@ private:
 }  // namespace src::control::agitator
 
 #endif  // UNJAM_SPOKE_AGITATOR_COMMAND_HPP_
+
+#endif

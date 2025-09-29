@@ -88,7 +88,7 @@ class ConstantVelocityAgitatorCommand : public tap::control::setpoint::MoveInteg
 
     // protected:
     //     bool useSingleShotMode = true;
+    // };
 };
-
 }  // namespace src::control::agitator
 #endif  // CONSTANT_VELOCITY_AGITATOR_COMMAND_HPP_

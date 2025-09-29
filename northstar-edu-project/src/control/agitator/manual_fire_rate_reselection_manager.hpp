@@ -17,6 +17,8 @@
  * along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifdef TARGET_LAUNCHER
+
 #ifndef MANUAL_FIRE_RATE_RESELECTION_MANAGER_HPP_
 #define MANUAL_FIRE_RATE_RESELECTION_MANAGER_HPP_
 
@@ -69,3 +71,5 @@ private:
 }  // namespace src::control::agitator
 
 #endif  // MANUAL_FIRE_RATE_RESELECTION_MANAGER_HPP_
+
+#endif
