@@ -53,14 +53,18 @@ for motor ids and can bus.
 */
 // flywheel subsystem
 
+FlywheelSubsystem *flywheelSubsystem = new FlywheelSubsystem(drivers());
+
 // STEP 2: CREATE FLYWHEELRUNCOMMAND
 // flywheel commands
+
+FlywheelRunCommand *flywheelRunCommand = new FlywheelRunCommand(flywheelSubsystem);
 
 /* STEP 3: MAKE COMMAND MAPPING
 Commands can be triggered by remote map states. These are things like a keybind
 or a switch on the remote. A very common mapping is the toggle command mapping.
-This takes in a drivers pointer, a vector of pointers to commands to be run and a RemoteMapState.
-Example of a remote map state for pressing f:
+This takes in a drivers pointer, a vector of pointers to commands to be run and a
+RemoteMapState. Example of a remote map state for pressing f:
 RemoteMapState(RemoteMapState({tap::communication::serial::Remote::Key::F}))
 and for left switch up:
 RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
@@ -72,12 +76,22 @@ should run the flywheel run command.
 */
 // flywheel mappings
 
+ToggleCommandMapping *flywheelRunCommandMapping_F = new ToggleCommandMapping(
+    drivers(),
+    {flywheelRunCommand},
+    RemoteMapState({tap::communication::serial::Remote::Key::F}));
+
+ToggleCommandMapping *flywheelRunCommandMapping_LeftSwitch = new ToggleCommandMapping(
+    drivers(),
+    {flywheelRunCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
 // AGITATOR WORK HERE
 
 // agitator subsystem HERE
 
-// agitator commands (ConstantVelocityAgitatorCommand and UnjamSpokeAgitatorCommand with agitator
-// configs in constants)
+// agitator commands (ConstantVelocityAgitatorCommand and UnjamSpokeAgitatorCommand with
+// agitator configs in constants)
 
 // make a MoveUnjamIntegralComprisedCommand which takes in both previous commands
 
@@ -99,12 +113,15 @@ void initializeSubsystems(Drivers *drivers)
 {
     // FLYWHEEL STEP 4: INITIALIZE SUBSYSTEM
 
+    flywheelSubsystem->initialize();
     // Initialize agitator
 }
 
 void registerStandardSubsystems(Drivers *drivers)
 {
     // FLYWHEEL STEP 5: REGISTAR SUBSYSTEM
+
+    drivers->commandScheduler.registerSubsystem(flywheelSubsystem);
 
     // Register agitator
 }
@@ -121,6 +138,8 @@ void registerStandardIoMappings(Drivers *drivers)
 {
     // FLYWHEEL STEP 6: ADD COMMAND MAPPINGS
     // use drivers->commandMapper.addMap() passing in the pointer to the mapping.
+    drivers->commandMapper.addMap(flywheelRunCommandMapping_F);
+    drivers->commandMapper.addMap(flywheelRunCommandMapping_LeftSwitch);
 
     // Add agitator mappings
 }

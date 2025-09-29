@@ -26,7 +26,7 @@ public:
 
     const char* getName() const override { return "Flyhweel"; }
 
-    void initialize() override {}
+    void initialize() override;
 
     void execute() override;
 
