@@ -64,6 +64,23 @@ namespace src::chassis
 */
 
 //STEP 1-4 HERE
+ChassisSubsystem::ChassisSubsystem(tap::Drivers* const, ChassisConfig& config):Subsystem(drivers),desiredOutput{},
+
+pidControllers{
+modm::Pid<float>(VELOCITY_PID_KP,VELOCITY_PID_KI,VELOCITY_PID_KD,VELOCITY_PID_MAX_ERROR_SUM,VELOCITY_PID_MAX_OUTPUT),
+modm::Pid<float>(VELOCITY_PID_KP,VELOCITY_PID_KI,VELOCITY_PID_KD,VELOCITY_PID_MAX_ERROR_SUM,VELOCITY_PID_MAX_OUTPUT),
+modm::Pid<float>(VELOCITY_PID_KP,VELOCITY_PID_KI,VELOCITY_PID_KD,VELOCITY_PID_MAX_ERROR_SUM,VELOCITY_PID_MAX_OUTPUT),
+modm::Pid<float>(VELOCITY_PID_KP,VELOCITY_PID_KI,VELOCITY_PID_KD,VELOCITY_PID_MAX_ERROR_SUM,VELOCITY_PID_MAX_OUTPUT),
+},
+motors{
+  Motor(drivers,config.leftFrontId,config.canBus,false,"LF"),
+  Motor(drivers,config.leftBackId,config.canBus,false,"LB"),
+  Motor(drivers,config.rightBackId,config.canBus,false,"RB"),
+  Motor(drivers,config.rightFrontId,config.canBus,false,"RF")
+
+}
+{}
+
 
 
 void ChassisSubsystem::initialize()
@@ -85,9 +102,9 @@ void ChassisSubsystem::initialize()
    r = rotational input
    h = heading input
 
-   x_local = x * cos(h) + y * sin(h) (this transforms the x velo to the plane of the heading)
+   x_local = x * cos(h) + y * sin(h) //(this transforms the x velo to the plane of the heading)
 
-   y_local = -x * sin(h) + y * cos(h) (this transforms the y velo to the plane of the heading)
+   y_local = -x * sin(h) + y * cos(h) //(this transforms the y velo to the plane of the heading)
 
    left_front = (x_local - y_local) / sqrt2 + (r) * DIST_TO_CENTER * sqrt2;
 
@@ -108,7 +125,34 @@ void ChassisSubsystem::initialize()
    motors will be told these values in the refresh method.
 */
 //STEP 5 HERE
+void ChassisSubsystem::driveBasedOnHeading(float fwd,float side, float rot,float heading){
 
+
+
+  float x_local = fwd * cos(heading) + side * sin(heading); //(this transforms the x velo to the plane of the heading)
+
+  float y_local = -fwd * sin(heading) + side * cos(heading); //(this transforms the y velo to the plane of the heading)
+
+  float left_front = (x_local - y_local) / 1.41421356f + (rot) * DIST_TO_CENTER * 1.41421356f;
+
+  float right_front = (-x_local - y_local) / 1.41421356f + (rot) * DIST_TO_CENTER * 1.41421356f;
+
+  float right_back = (-x_local + y_local) / 1.41421356f + (rot) * DIST_TO_CENTER * 1.41421356f;
+
+  float left_back = (x_local + y_local) / 1.41421356f + (rot) * DIST_TO_CENTER * 1.41421356f;
+
+  left_back = mpsToRpm(left_back);
+
+  desiredOutput[0] = left_front;
+  desiredOutput[1] = right_front;
+  desiredOutput[2] = right_back;
+  desiredOutput[3] = left_back;
+
+  for (float output : desiredOutput){
+    output = mpsToRpm(output);
+    output = limitVal<float>(output, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+  }
+}
 /*
    STEP 6: setVelocityFieldDrive METHOD
 
@@ -123,7 +167,7 @@ void ChassisSubsystem::initialize()
 
 /* STEP 7: REFRESH METHOD
 
-Here is the refresh method, go through is and try to understand what is happening.
+Here is the refresh method, go through is and try to understand what is happening.*/
 
 void ChassisSubsystem::refresh()
 {
@@ -147,8 +191,8 @@ void ChassisSubsystem::refresh()
             desiredOutput[ii],
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
-} Uncoment this block
-*/ 
+} //Uncoment this block
+
 }  // namespace src::chassis
 
 #endif
