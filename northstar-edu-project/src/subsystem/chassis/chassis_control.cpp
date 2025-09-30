@@ -43,24 +43,42 @@ STEP 1: DEFINE A CHASSIS SUBSYSTEM
 Create a chassis subsystem by passing in everything that in needed in the constructor. For the
 drivers pointer user drivers() to get it.
 */
-
+ChassisSubsystem subsystem{
+    drivers(),
+    ChassisConfig{
+        MotorId::MOTOR2,
+        MotorId::MOTOR3,
+        MotorId::MOTOR4,
+        MotorId::MOTOR1,
+        tap::can::CanBus::CAN_BUS1,
+        modm::Pid<float>::Parameter(
+            VELOCITY_PID_KD,
+            VELOCITY_PID_KI,
+            VELOCITY_PID_KD,
+            VELOCITY_PID_MAX_ERROR_SUM,
+            VELOCITY_PID_MAX_OUTPUT)}};
 /* STEP 2: DRIVE COMMAND
 create a chassis drive command. To get the control operator interface use
 drivers()->controlOperatorInterface
 */
-
-void initializeSubsystems(Drivers *drivers)
-{
-    /* STEP 3: INITIALIZE SUBSYSTEMS
-    call the initialize on the chassis subsystem
-    */
+src::chassis::ChassisDriveCommand drive_command{&subsystem, &(drivers()->controlOperatorInterface)};
+/*
+void drive(){
+    float x  = drivers()->controlOperatorInterface.getDrivetrainHorizontalTranslation();
+    float y  = drivers()->controlOperatorInterface.getDrivetrainVerticalTranslation();
+    float r  = drivers()->controlOperatorInterface.getDrivetrainRotationalTranslation();
+    subsystem.setVelocityFieldDrive(x, y, r);
 }
+*/
+
+void initializeSubsystems(Drivers *drivers) { subsystem.initialize(); }
 
 void registerStandardSubsystems(Drivers *drivers)
 {
     // STEP 4: REGISTER SUBSYSTEMS
     // pass in chassis subsystem to this method.
     // drivers->commandScheduler.registerSubsystem();
+    drivers->commandScheduler.registerSubsystem(&subsystem);
 }
 
 void setDefaultStandardCommands(Drivers *drivers)
@@ -69,6 +87,7 @@ void setDefaultStandardCommands(Drivers *drivers)
     use .setDefaultCommand from any subsystem object and pass in a pointer to a command that will
     run by default.
     */
+    subsystem.setDefaultCommand(&drive_command);
 }
 
 void startStandardCommands(Drivers *drivers)

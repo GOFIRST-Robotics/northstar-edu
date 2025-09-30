@@ -62,17 +62,17 @@ operator interface.
 float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
 {
     float out{};
-    out += remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
-    out += static_cast<float>(remote.keyPressed(Remote::Key::W));
-    out += -static_cast<float>(remote.keyPressed(Remote::Key::S));
+    out += -remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+    out += static_cast<float>(remote.keyPressed(Remote::Key::A));
+    out += -static_cast<float>(remote.keyPressed(Remote::Key::D));
     return limitVal<float>(out, -1, 1);
 }
 float ControlOperatorInterface::getDrivetrainVerticalTranslation()
 {
     float out{};
     out += remote.getChannel(Remote::Channel::LEFT_VERTICAL);
-    out += static_cast<float>(remote.keyPressed(Remote::Key::A));
-    out += -static_cast<float>(remote.keyPressed(Remote::Key::D));
+    out += static_cast<float>(remote.keyPressed(Remote::Key::W));
+    out += -static_cast<float>(remote.keyPressed(Remote::Key::S));
     return limitVal<float>(out, -1, 1);
 }
 float ControlOperatorInterface::getDrivetrainRotationalTranslation()

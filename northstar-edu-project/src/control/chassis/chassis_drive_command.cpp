@@ -39,6 +39,7 @@ ChassisDriveCommand::ChassisDriveCommand(
     : m_subsystem{subsystem},
       m_interface{interface}
 {
+    addSubsystemRequirement(subsystem);
 }
 // STEP 2 HERE
 void ChassisDriveCommand::execute()

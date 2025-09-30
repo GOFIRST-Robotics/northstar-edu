@@ -1,3 +1,4 @@
+#ifdef TARGET_LAUNCHER
 #include "velocity_agitator_subsystem.hpp"
 
 #include <cassert>
@@ -103,3 +104,5 @@ void VelocityAgitatorSubsystem::setSetpoint(float velocity)
     }
 }
 }  // namespace src::agitator
+
+#endif
