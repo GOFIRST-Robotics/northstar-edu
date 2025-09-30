@@ -164,7 +164,9 @@ void ChassisSubsystem::driveBasedOnHeading(float fwd,float side, float rot,float
 
 */
 //STEP 6 HERE
-
+void ChassisSubsystem::setVelocityFieldDrive(float fwd,float side, float rot){
+  ChassisSubsystem::driveBasedOnHeading(fwd,side,rot,drivers->bmi088.getYaw());
+}
 /* STEP 7: REFRESH METHOD
 
 Here is the refresh method, go through is and try to understand what is happening.*/

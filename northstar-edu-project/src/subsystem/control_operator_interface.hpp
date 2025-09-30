@@ -50,7 +50,10 @@ the next task.
 class ControlOperatorInterface
 {
 public:
-    ControlOperatorInterface(tap::Drivers *drivers) : remote(drivers->remote) {}
+    ControlOperatorInterface(tap::Drivers *drivers) : remote(drivers->remote) {};
+    float ControlOperatorInterface::getDrivetrainHorizontalTranslation();
+    float ControlOperatorInterface::getDrivetrainVerticalTranslation();
+    float ControlOperatorInterface::getDrivetrainRotationalTranslation();
 
 private:
     tap::communication::serial::Remote &remote;

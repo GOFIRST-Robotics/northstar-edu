@@ -80,7 +80,7 @@ public:
     for the heading
     */
     //STEP 2 HERE
-    void setVelocityFeildDrive(float fwd,float side, float rot);
+    void setVelocityFieldDrive(float fwd,float side, float rot);
     void driveBasedOnHeading(float fwd,float side, float rot,float heading);
     void initialize() override;
 

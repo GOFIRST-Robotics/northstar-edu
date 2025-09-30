@@ -41,6 +41,8 @@ namespace control
 Chassis Task 4:
 STEP 1: CREATE METHODS MADE IN THE HEADER FILE
 
+void 
+
 This step is pretty straightforward. You need to define the methods you made in the header.
 
 STEP 2: GET THE VALUES FROM THE REMOTE OBJECT
@@ -58,6 +60,30 @@ implement this is to multiply the output from the controller by a max speed
 After you are done with this step, you should repeat task 3 and 4 for the fly sky remote
 operator interface.
 */
+
+float ControlOperatorInterface::getDrivetrainHorizontalTranslation(){
+
+    //potential double speed if somebody uses the channel and the keys at the same time
+    float input = remote.getChannel(Remote::Channel::LEFT_HORIZONTAL) 
+    + ( remote.keyPressed(Remote::Key::W) - remote.keyPressed(Remote::Key::S) );
+    return input;
+}
+
+float ControlOperatorInterface::getDrivetrainVerticalTranslation(){
+
+    //potential double speed if somebody uses the channel and the keys at the same time
+    float input = remote.getChannel(Remote::Channel::LEFT_VERTICAL) 
+    + ( remote.keyPressed(Remote::Key::D) - remote.keyPressed(Remote::Key::A) );
+    return input;
+}
+
+float ControlOperatorInterface::getDrivetrainHorizontalTranslation(){
+
+    //potential double speed if somebody uses the channel and the keys at the same time
+    float input = remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) 
+    + ( remote.keyPressed(Remote::Key::Q) - remote.keyPressed(Remote::Key::E) );
+    return input;
+}
 
 }  // namespace control
 
