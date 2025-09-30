@@ -22,8 +22,8 @@ public:
     Name needs to be same as class name, and needs to take in a drivers pointer and a left and right
     motor Id of type tap::motor::MotorId
     */
-
-    // void initialize() override; UNCOMMENT THIS
+    FlywheelSubsystem(tap::Drivers* drivers, tap::motor::MotorId left, tap::motor::MotorId right);
+    void initialize() override;
 
     /* STEP 2: DECLARE METHODS
     Flywheel subsystem needs a setter for a desired launch speed, and setters for Flywheel speeds.
@@ -49,21 +49,27 @@ public:
         PRIVATE get wheel rpm which takes in a motor pointer and returns the rpm. Use this return
         motor->getEncoder()->getVelocity() * 60.0f / M_TWOPI; this can be implemented in the .hpp
     */
-
+    void setLaunchSpeed(float mps);
+    float getLaunchSpeedRight();
+    float getLaunchSpeedLeft();
+    float getDesiredFlywheelSpeedRight();
+    float getDesiredFlywheelSpeedLeft();
+    float getCurrentFlywheelRPMRight();
+    float getCurrentFlywheelRPMLeft();
     void refresh() override;
 
     void refreshSafeDisconnect() override
     {
-        leftWheel.setDesiredOutput(0);
-        rightWheel.setDesiredOutput(0);
+        motor_left.setDesiredOutput(0);
+        motor_right.setDesiredOutput(0);
     }
 
-    const char *getName() const override { return "Flywheels"; }
+    const char* getName() const override { return "Flywheels"; }
 
 protected:
     static constexpr float MAX_DESIRED_LAUNCH_SPEED = 25;
 
-    tap::Drivers *drivers;
+    tap::Drivers* drivers;
 
 private:
     /* STEP 3: DEFINE PRIVATE GLOBAL VARIABLES
@@ -77,9 +83,26 @@ private:
 
 
     */
+    modm::Pid<float> left_pid;
+    modm::Pid<float> right_pid;
+    tap::algorithms::Ramp ramp_right;
+    tap::algorithms::Ramp ramp_left;
+    tap::motor::DjiMotor motor_right;
+    tap::motor::DjiMotor motor_left;
+    float desired_launch_right;
+    float desired_launch_left;
     uint32_t prevTime = 0;
 
     // put PRIVATE methods here
+    float launchSpeedToFlywheelRPM(float speed)
+    {
+        return (speed) / (M_PI * WHEEL_DIAMETER) * 60.0f;
+    }
+
+    float getWheelRPM(tap::motor::DjiMotor* motor)
+    {
+        return motor->getEncoder()->getVelocity() * 60.0f / M_TWOPI;
+    }
 };
 
 }  // namespace src::control::flywheel
