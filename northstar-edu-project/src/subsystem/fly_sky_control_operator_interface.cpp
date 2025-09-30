@@ -23,6 +23,25 @@ For the translation methods here, dont worry about keyboard input. An example of
 would be remote.getChannel(FlySky::Channel::LEFT_HORIZONTAL)
 */
 
+ControlOperatorInterface::ControlOperatorInterface(tap::Drivers *drivers) : remote(drivers->remote)
+{
+}
+
+float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
+{
+    return 3 * (remote.getChannel(FlySky::Channel::LEFT_HORIZONTAL));
+}
+
+float ControlOperatorInterface::getDrivetrainVerticalTranslation()
+{
+    return 3 * (remote.getChannel(FlySky::Channel::LEFT_VERTICAL));
+}
+
+float ControlOperatorInterface::getDrivetrainRotationalTranslation()
+{
+    return 3 * (remote.getChannel(FlySky::Channel::RIGHT_HORIZONTAL));
+}
+
 }  // namespace control
 
 }  // namespace src

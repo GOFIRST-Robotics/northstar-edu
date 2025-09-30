@@ -33,8 +33,31 @@ chassis velocity to 0 for all parameters.
 */
 
 // STEP 1 HERE
+ChassisDriveCommand::ChassisDriveCommand(
+    ChassisSubsystem* chassisSubsystem,
+    src::control::ControlOperatorInterface* controlOperatorInterface)
+    : chassisSubsystem(chassisSubsystem),
+      controlOperatorInterface(controlOperatorInterface)
+{
+    addSubsystemRequirement(chassisSubsystem);
+}
 
 // STEP 2 HERE
+void ChassisDriveCommand::execute()
+{
+    chassisSubsystem->setVelocityFieldDrive(
+        limitVal(controlOperatorInterface->getDrivetrainVerticalTranslation(), -1.0f, 1.0f) *
+            MAX_CHASSIS_SPEED_MPS,
+        limitVal(controlOperatorInterface->getDrivetrainHorizontalTranslation(), -1.0f, 1.0f) *
+            MAX_CHASSIS_SPEED_MPS,
+        limitVal(controlOperatorInterface->getDrivetrainRotationalTranslation(), -1.0f, 1.0f) *
+            MAX_CHASSIS_ROTATION_SPEED);
+}
+
+void ChassisDriveCommand::end(bool interrupted)
+{
+    chassisSubsystem->setVelocityFieldDrive(0, 0, 0);
+}
 
 };  // namespace src::chassis
 

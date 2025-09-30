@@ -158,10 +158,10 @@ void ChassisSubsystem::driveBasedOnHeading(
     float right_back = (-x_local + y_local) / sqrt(2.0) + (rotationalV)*DIST_TO_CENTER * sqrt(2.0);
     float left_back = (x_local + y_local) / sqrt(2.0) + (rotationalV)*DIST_TO_CENTER * sqrt(2.0);
 
-    float LFRPM = limitVal<float>(left_front, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
-    float LBRPM = limitVal<float>(left_back, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
-    float RFRPM = limitVal<float>(right_front, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
-    float RBRPM = limitVal<float>(right_back, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+    float LFRPM = mpsToRpm(limitVal<float>(left_front, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM));
+    float LBRPM = mpsToRpm(limitVal<float>(left_back, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM));
+    float RFRPM = mpsToRpm(limitVal<float>(right_front, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM));
+    float RBRPM = mpsToRpm(limitVal<float>(right_back, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM));
 
     desiredOutput[0] = LFRPM;
     desiredOutput[1] = LBRPM;
@@ -190,7 +190,7 @@ void ChassisSubsystem::setVelocityFieldDrive(float forwardV, float sidewaysV, fl
 /* STEP 7: REFRESH METHOD
 
 Here is the refresh method, go through is and try to understand what is happening.
-
+*/
 void ChassisSubsystem::refresh()
 {
     auto runPid = [](Pid& pid,
@@ -204,17 +204,17 @@ void ChassisSubsystem::refresh()
         motor.setDesiredOutput(pid.getValue());
     };
 
-    for (size_t ii = 0; ii < motors.size(); ii++)
+    for (size_t ii = 0; ii < motorArray.size(); ii++)
     {
         runPid(
             pidControllers[ii],
             rampControllers[ii],
-            motors[ii],
+            motorArray[ii],
             desiredOutput[ii],
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
-} Uncoment this block
-*/
+}
+
 }  // namespace src::chassis
 
 #endif

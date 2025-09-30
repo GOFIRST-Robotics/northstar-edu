@@ -40,7 +40,11 @@ namespace control
 /*
 Chassis Task 4:
 STEP 1: CREATE METHODS MADE IN THE HEADER FILE
-
+*/
+// float getDrivetrainHorizontalTranslation();
+// float getDrivetrainVerticalTranslation();
+// float getDrivetrainRotationalTranslation();
+/*
 This step is pretty straightforward. You need to define the methods you made in the header.
 
 STEP 2: GET THE VALUES FROM THE REMOTE OBJECT
@@ -59,6 +63,30 @@ rotational input from Remote::Channel::WHEEL.
 After you are done with this step, you should repeat task 3 and 4 for the fly sky remote
 operator interface.
 */
+ControlOperatorInterface::ControlOperatorInterface(tap::Drivers *drivers) : remote(drivers->remote)
+{
+}
+
+float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
+{
+    return (
+        remote.getChannel(Remote::Channel::LEFT_HORIZONTAL) - remote.keyPressed(Remote::Key::A) +
+        remote.keyPressed(Remote::Key::D));
+}
+
+float ControlOperatorInterface::getDrivetrainVerticalTranslation()
+{
+    return (
+        remote.getChannel(Remote::Channel::LEFT_VERTICAL) - remote.keyPressed(Remote::Key::S) +
+        remote.keyPressed(Remote::Key::W));
+}
+
+float ControlOperatorInterface::getDrivetrainRotationalTranslation()
+{
+    return (
+        remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - remote.keyPressed(Remote::Key::Q) +
+        remote.keyPressed(Remote::Key::E));
+}
 
 }  // namespace control
 
