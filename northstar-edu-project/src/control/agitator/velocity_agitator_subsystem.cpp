@@ -38,10 +38,22 @@ and understand what is going on. If you have questions ask.
 
 */
 VelocityAgitatorSubsystem::VelocityAgitatorSubsystem(
-    // STEP 1 HERE
-    )
-    :
-
+    tap::Drivers* drivers_,
+    const tap::algorithms::SmoothPidConfig velocityPid_,
+    const VelocityAgitatorSubsystemConfig config_)
+    : Subsystem(drivers),
+      velocityPid(velocityPid),
+      config(config_),
+      jamChecker(tap::control::setpoint::SetpointContinuousJamChecker(
+          this,
+          config.jammingVelocityDifference,
+          config.jammingTime)),
+      agitatorMotor(tap::motor::DjiMotor(
+          drivers,
+          config.agitatorMotorId,
+          config.agitatorCanBusId,
+          false,
+          "Agitator Motor"))
 {
     assert(config.jammingVelocityDifference >= 0);
 }
@@ -73,12 +85,24 @@ void VelocityAgitatorSubsystem::refresh()
 
 bool VelocityAgitatorSubsystem::calibrateHere()
 {
-    // STEP 3 HERE
+    if (agitatorMotor.isMotorOnline())
+    {
+        agitatorMotor.resetEncoderValue();
+        agitatorIsCalibrated = true;
+        return true;
+    }
+
+    return false;
 }
 
 float VelocityAgitatorSubsystem::getCurrentValueIntegral() const
 {
-    // STEP 4 HERE
+    if (agitatorIsCalibrated)
+    {
+        return agitatorMotor.getEncoder()->getPosition().getUnwrappedValue();
+    }
+
+    return 0.0f;
 }
 
 void VelocityAgitatorSubsystem::runVelocityPidControl()

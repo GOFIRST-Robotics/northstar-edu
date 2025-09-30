@@ -55,6 +55,10 @@ public:
     */
 
     // STEP 1 HERE
+    VelocityAgitatorSubsystem(
+        tap::Drivers* drivers_,
+        const tap::algorithms::SmoothPidConfig velocityPid_,
+        const VelocityAgitatorSubsystemConfig config_);
 
     void initialize() override;
 
@@ -62,7 +66,8 @@ public:
 
     void refreshSafeDisconnect() override
     {
-        // STEP 2 HERE
+        agitatorMotor.setDesiredOutput(0);
+        subsystemJamStatus = false;
     }
 
     const char* getName() const override { return "velocity agitator"; }
