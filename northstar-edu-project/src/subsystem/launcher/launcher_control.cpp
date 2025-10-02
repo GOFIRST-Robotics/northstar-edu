@@ -115,17 +115,17 @@ MoveUnjamIntegralComprisedCommand *moveUnjamIntegralComprisedCommand =
 
 // Below are mappings for the commands, uncomment and finish them
 
-// HoldRepeatCommandMapping leftMousePressedShoot(
-//     drivers(),
-//     {&<comprised command here>},
-//     RemoteMapState(RemoteMapState::MouseButton::LEFT),
-//     false);
+HoldRepeatCommandMapping leftMousePressedShoot(
+    drivers(),
+    {moveUnjamIntegralComprisedCommand},
+    RemoteMapState(RemoteMapState::MouseButton::LEFT),
+    false);
 
-// HoldRepeatCommandMapping rightSwitchUpShoot(
-//     drivers(),
-//     {&<comprised command here>},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-//     false);
+HoldRepeatCommandMapping rightSwitchUpShoot(
+    drivers(),
+    {moveUnjamIntegralComprisedCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+    false);
 
 void initializeSubsystems(Drivers *drivers)
 {
@@ -161,6 +161,8 @@ void registerStandardIoMappings(Drivers *drivers)
     drivers->commandMapper.addMap(flywheelRunCommandMapping_LeftSwitch);
 
     // Add agitator mappings
+    drivers->commandMapper.addMap(&leftMousePressedShoot);
+    drivers->commandMapper.addMap(&rightSwitchUpShoot);
 }
 
 RemoteSafeDisconnectFunction remoteSafeDisconnectFunction(drivers());

@@ -12,6 +12,8 @@ FlywheelRunCommand::FlywheelRunCommand(FlywheelSubsystem* flywheelSubsystem_)
 
 void FlywheelRunCommand::initialize() { flywheelSubsystem->setLaunchSpeedMPS(21.7); }
 
+void FlywheelRunCommand::execute() {}
+
 void FlywheelRunCommand::end(bool interrupted) { flywheelSubsystem->setLaunchSpeedMPS(0); }
 
 }  // namespace src::control::flywheel
