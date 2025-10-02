@@ -43,52 +43,51 @@ class ConstantVelocityAgitatorCommand : public tap::control::setpoint::MoveInteg
     This class extends the MoveIntegralCommand class. Look through it and understand what is going
     on. Then write a brief description of what the methods do below.
     */
-    // public:
-    //     ConstantVelocityAgitatorCommand(
-    //         tap::control::setpoint::IntegrableSetpointSubsystem& integrableSetpointSubsystem,
-    //         const Config& config)
-    //         : tap::control::setpoint::MoveIntegralCommand(integrableSetpointSubsystem, config)
-    //     {
-    //     }
+public:
+    ConstantVelocityAgitatorCommand(
+        tap::control::setpoint::IntegrableSetpointSubsystem& integrableSetpointSubsystem,
+        const Config& config)
+        : tap::control::setpoint::MoveIntegralCommand(integrableSetpointSubsystem, config)
+    {
+    }
 
-    //     const char* getName() const override { return "Constant velocity agitator command"; }
+    const char* getName() const override { return "Constant velocity agitator command"; }
 
-    //     bool isFinished() const
-    //     {
-    //         // The subsystem is jammed or offline or it is within the setpoint tolerance
-    //         return integrableSetpointSubsystem.isJammed() ||
-    //         !integrableSetpointSubsystem.isOnline() ||
-    //                (useSingleShotMode && targetIntegralReached());
-    //     };
+    bool isFinished() const
+    {
+        // The subsystem is jammed or offline or it is within the setpoint tolerance
+        return integrableSetpointSubsystem.isJammed() || !integrableSetpointSubsystem.isOnline() ||
+               (useSingleShotMode && targetIntegralReached());
+    }
 
-    //     void enableConstantRotation(bool constantRotation)
-    //     {
-    //         bool previousModeWasConstantRotation = !useSingleShotMode;
-    //         useSingleShotMode = !constantRotation;
-    //         if (useSingleShotMode && previousModeWasConstantRotation)
-    //         {
-    //             if (getSign(config.targetIntegralChange) == -1)
-    //             {
-    //                 while (finalTargetIntegralSetpoint >
-    //                        integrableSetpointSubsystem.getCurrentValueIntegral())
-    //                 {
-    //                     finalTargetIntegralSetpoint -= config.targetIntegralChange;
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 while (finalTargetIntegralSetpoint <
-    //                        integrableSetpointSubsystem.getCurrentValueIntegral())
-    //                 {
-    //                     finalTargetIntegralSetpoint += config.targetIntegralChange;
-    //                 }
-    //             }
-    //         }
-    //     }
+    void enableConstantRotation(bool constantRotation)
+    {
+        bool previousModeWasConstantRotation = !useSingleShotMode;
+        useSingleShotMode = !constantRotation;
+        if (useSingleShotMode && previousModeWasConstantRotation)
+        {
+            if (getSign(config.targetIntegralChange) == -1)
+            {
+                while (finalTargetIntegralSetpoint >
+                       integrableSetpointSubsystem.getCurrentValueIntegral())
+                {
+                    finalTargetIntegralSetpoint -= config.targetIntegralChange;
+                }
+            }
+            else
+            {
+                while (finalTargetIntegralSetpoint <
+                       integrableSetpointSubsystem.getCurrentValueIntegral())
+                {
+                    finalTargetIntegralSetpoint += config.targetIntegralChange;
+                }
+            }
+        }
+    }
 
-    // protected:
-    //     bool useSingleShotMode = true;
-    // };
+protected:
+    bool useSingleShotMode = true;
 };
-}  // namespace src::control::agitator
+};  // namespace src::control::agitator
+// namespace src::control::agitator
 #endif  // CONSTANT_VELOCITY_AGITATOR_COMMAND_HPP_

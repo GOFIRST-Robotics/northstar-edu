@@ -89,11 +89,29 @@ ToggleCommandMapping *flywheelRunCommandMapping_LeftSwitch = new ToggleCommandMa
 // AGITATOR WORK HERE
 
 // agitator subsystem HERE
+VelocityAgitatorSubsystem *agitatorSubsystem = new VelocityAgitatorSubsystem(
+    drivers(),
+    agitator::constants::AGITATOR_PID_CONFIG,
+    agitator::constants::AGITATOR_CONFIG);
 
 // agitator commands (ConstantVelocityAgitatorCommand and UnjamSpokeAgitatorCommand with
 // agitator configs in constants)
 
+ConstantVelocityAgitatorCommand *constantVelocityAgitatorCommand =
+    new ConstantVelocityAgitatorCommand(
+        *agitatorSubsystem,
+        agitator::constants::AGITATOR_ROTATE_CONFIG);
+UnjamSpokeAgitatorCommand *unjamSpokeAgitatorCommand =
+    new UnjamSpokeAgitatorCommand(*agitatorSubsystem, agitator::constants::AGITATOR_UNJAM_CONFIG);
+
 // make a MoveUnjamIntegralComprisedCommand which takes in both previous commands
+
+MoveUnjamIntegralComprisedCommand *moveUnjamIntegralComprisedCommand =
+    new MoveUnjamIntegralComprisedCommand(
+        *drivers(),
+        *agitatorSubsystem,
+        *constantVelocityAgitatorCommand,
+        *unjamSpokeAgitatorCommand);
 
 // Below are mappings for the commands, uncomment and finish them
 
@@ -114,7 +132,7 @@ void initializeSubsystems(Drivers *drivers)
     // FLYWHEEL STEP 4: INITIALIZE SUBSYSTEM
 
     flywheelSubsystem->initialize();
-    // Initialize agitator
+    agitatorSubsystem->initialize();
 }
 
 void registerStandardSubsystems(Drivers *drivers)
@@ -122,6 +140,7 @@ void registerStandardSubsystems(Drivers *drivers)
     // FLYWHEEL STEP 5: REGISTAR SUBSYSTEM
 
     drivers->commandScheduler.registerSubsystem(flywheelSubsystem);
+    drivers->commandScheduler.registerSubsystem(agitatorSubsystem);
 
     // Register agitator
 }

@@ -30,98 +30,98 @@ using namespace tap::control::setpoint;
 
 namespace src::control::agitator
 {
-// UnjamSpokeAgitatorCommand::UnjamSpokeAgitatorCommand(
-//     IntegrableSetpointSubsystem& integrableSetpointSubsystem,
-//     const Config& config)
-//     : integrableSetpointSubsystem(integrableSetpointSubsystem),
-//       config(config)
-// {
-//     assert(config.targetUnjamIntegralChange > 0);
-//     assert(config.targetCycleCount > 0);
-//     assert(config.maxWaitTime > 0);
+UnjamSpokeAgitatorCommand::UnjamSpokeAgitatorCommand(
+    IntegrableSetpointSubsystem& integrableSetpointSubsystem,
+    const Config& config)
+    : integrableSetpointSubsystem(integrableSetpointSubsystem),
+      config(config)
+{
+    assert(config.targetUnjamIntegralChange > 0);
+    assert(config.targetCycleCount > 0);
+    assert(config.maxWaitTime > 0);
 
-//     // max wait time must be > min time it will take to reach the unjam displacement given the
-//     unjam
-//     // velocity
-//     assert(
-//         1000.0f * (this->config.targetUnjamIntegralChange / this->config.unjamSetpoint) <
-//         this->config.maxWaitTime);
+    // max wait time must be > min time it will take to reach the unjam displacement given the
+    // unjam
+    // velocity
+    assert(
+        1000.0f * (this->config.targetUnjamIntegralChange / this->config.unjamSetpoint) <
+        this->config.maxWaitTime);
 
-//     addSubsystemRequirement(&integrableSetpointSubsystem);
+    addSubsystemRequirement(&integrableSetpointSubsystem);
 
-//     unjamRotateTimeout.stop();
-// }
+    unjamRotateTimeout.stop();
+}
 
-// bool UnjamSpokeAgitatorCommand::isReady() { return integrableSetpointSubsystem.isOnline(); }
+bool UnjamSpokeAgitatorCommand::isReady() { return integrableSetpointSubsystem.isOnline(); }
 
-// void UnjamSpokeAgitatorCommand::initialize()
-// {
-//     unjamRotateTimeout.restart(config.maxWaitTime);
+void UnjamSpokeAgitatorCommand::initialize()
+{
+    unjamRotateTimeout.restart(config.maxWaitTime);
 
-//     positionBeforeUnjam = integrableSetpointSubsystem.getCurrentValueIntegral();
+    positionBeforeUnjam = integrableSetpointSubsystem.getCurrentValueIntegral();
 
-//     backwardsCount = 0;
+    backwardsCount = 0;
 
-//     beginUnjamBackwards();
-// }
+    beginUnjamBackwards();
+}
 
-// void UnjamSpokeAgitatorCommand::execute()
-// {
-//     float curPosition = integrableSetpointSubsystem.getCurrentValueIntegral();
+void UnjamSpokeAgitatorCommand::execute()
+{
+    float curPosition = integrableSetpointSubsystem.getCurrentValueIntegral();
 
-//     switch (currUnjamState)
-//     {
-//         case UNJAM_BACKWARD:
-//             if ((curPosition <= positionBeforeUnjam - config.targetUnjamIntegralChange) ||
-//                 unjamRotateTimeout.isExpired())
-//             {
-//                 beginUnjamForwards();
-//             }
-//             break;
-//         case RETURN_FORWARD:
-//             if (curPosition >= positionBeforeUnjam)
-//             {
-//                 currUnjamState = JAM_CLEARED;
-//             }
-//             else if (unjamRotateTimeout.isExpired())
-//             {
-//                 beginUnjamBackwards();
-//             }
-//             break;
-//         case JAM_CLEARED:
-//             break;
-//     }
-// }
+    switch (currUnjamState)
+    {
+        case UNJAM_BACKWARD:
+            if ((curPosition <= positionBeforeUnjam - config.targetUnjamIntegralChange) ||
+                unjamRotateTimeout.isExpired())
+            {
+                beginUnjamForwards();
+            }
+            break;
+        case RETURN_FORWARD:
+            if (curPosition >= positionBeforeUnjam)
+            {
+                currUnjamState = JAM_CLEARED;
+            }
+            else if (unjamRotateTimeout.isExpired())
+            {
+                beginUnjamBackwards();
+            }
+            break;
+        case JAM_CLEARED:
+            break;
+    }
+}
 
-// void UnjamSpokeAgitatorCommand::end(bool)
-// {
-//     if (currUnjamState == JAM_CLEARED)
-//     {
-//         integrableSetpointSubsystem.clearJam();
-//     }
-//     integrableSetpointSubsystem.setSetpoint(0);
-// }
+void UnjamSpokeAgitatorCommand::end(bool)
+{
+    if (currUnjamState == JAM_CLEARED)
+    {
+        integrableSetpointSubsystem.clearJam();
+    }
+    integrableSetpointSubsystem.setSetpoint(0);
+}
 
-// bool UnjamSpokeAgitatorCommand::isFinished() const
-// {
-//     return !integrableSetpointSubsystem.isOnline() || (currUnjamState == JAM_CLEARED) ||
-//            (backwardsCount >= config.targetCycleCount + 1);
-// }
+bool UnjamSpokeAgitatorCommand::isFinished() const
+{
+    return !integrableSetpointSubsystem.isOnline() || (currUnjamState == JAM_CLEARED) ||
+           (backwardsCount >= config.targetCycleCount + 1);
+}
 
-// void UnjamSpokeAgitatorCommand::beginUnjamForwards()
-// {
-//     unjamRotateTimeout.restart(config.maxWaitTime);
-//     integrableSetpointSubsystem.setSetpoint(config.unjamSetpoint);
-//     currUnjamState = RETURN_FORWARD;
-// }
+void UnjamSpokeAgitatorCommand::beginUnjamForwards()
+{
+    unjamRotateTimeout.restart(config.maxWaitTime);
+    integrableSetpointSubsystem.setSetpoint(config.unjamSetpoint);
+    currUnjamState = RETURN_FORWARD;
+}
 
-// void UnjamSpokeAgitatorCommand::beginUnjamBackwards()
-// {
-//     unjamRotateTimeout.restart(config.maxWaitTime);
-//     integrableSetpointSubsystem.setSetpoint(-config.unjamSetpoint);
-//     currUnjamState = UNJAM_BACKWARD;
-//     backwardsCount += 1;
-// }
+void UnjamSpokeAgitatorCommand::beginUnjamBackwards()
+{
+    unjamRotateTimeout.restart(config.maxWaitTime);
+    integrableSetpointSubsystem.setSetpoint(-config.unjamSetpoint);
+    currUnjamState = UNJAM_BACKWARD;
+    backwardsCount += 1;
+}
 
 }  // namespace src::control::agitator
 
