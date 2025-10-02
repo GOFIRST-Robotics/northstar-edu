@@ -17,6 +17,8 @@
  * along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifdef TARGET_LAUNCHER
+
 #include "unjam_spoke_agitator_command.hpp"
 
 #include <cassert>
@@ -122,3 +124,5 @@ namespace src::control::agitator
 // }
 
 }  // namespace src::control::agitator
+
+#endif
