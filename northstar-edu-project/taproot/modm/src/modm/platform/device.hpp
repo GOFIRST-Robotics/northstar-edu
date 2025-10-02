@@ -22,8 +22,8 @@
 #include <modm/architecture/utils.hpp>
 
 // Include external device headers:
-#include <stm32f407xx.h>
-#include <system_stm32f4xx.h>
+#include <ext/cmsis/device/stm32f407xx.h>
+#include <ext/cmsis/device/system_stm32f4xx.h>
 /// @cond
 // This is a hack to make the *_Typedef's known to GDB, so that you can debug
 // the peripherals directly in GDB in any context.
