@@ -52,9 +52,11 @@ make a flywheel subsystem object using constants from flywheel_constants.hpp
 for motor ids and can bus.
 */
 // flywheel subsystem
-
+FlywheelSubsystem flywheel_subsystem{drivers(), LEFT_MOTOR_ID, RIGHT_MOTOR_ID, CAN_BUS};
 // STEP 2: CREATE FLYWHEELRUNCOMMAND
 // flywheel commands
+
+FlywheelRunCommand flywheel_run_command{&flywheel_subsystem};
 
 /* STEP 3: MAKE COMMAND MAPPING
 Commands can be triggered by remote map states. These are things like a keybind
@@ -71,7 +73,14 @@ should run the flywheel run command.
 
 */
 // flywheel mappings
-
+ToggleCommandMapping flywheel_mapping_f{
+    drivers(),
+    std::vector<tap::control::Command *>{&flywheel_run_command},
+    RemoteMapState{{tap::communication::serial::Remote::Key::F}}};
+ToggleCommandMapping flywheel_mapping_switch{
+    drivers(),
+    std::vector<tap::control::Command *>{&flywheel_run_command},
+    RemoteMapState{Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP}};
 // AGITATOR WORK HERE
 
 // agitator subsystem HERE
@@ -98,14 +107,14 @@ should run the flywheel run command.
 void initializeSubsystems(Drivers *drivers)
 {
     // FLYWHEEL STEP 4: INITIALIZE SUBSYSTEM
-
+    flywheel_subsystem.initialize();
     // Initialize agitator
 }
 
 void registerStandardSubsystems(Drivers *drivers)
 {
     // FLYWHEEL STEP 5: REGISTAR SUBSYSTEM
-
+    flywheel_subsystem.registerAndInitialize();
     // Register agitator
 }
 
@@ -121,7 +130,8 @@ void registerStandardIoMappings(Drivers *drivers)
 {
     // FLYWHEEL STEP 6: ADD COMMAND MAPPINGS
     // use drivers->commandMapper.addMap() passing in the pointer to the mapping.
-
+    drivers->commandMapper.addMap(&flywheel_mapping_f);
+    drivers->commandMapper.addMap(&flywheel_mapping_switch);
     // Add agitator mappings
 }
 

@@ -1,8 +1,4 @@
 #ifdef TARGET_LAUNCHER
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 /*
  * Copyright (c) 2024 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
@@ -98,8 +94,4 @@ class ConstantVelocityAgitatorCommand : public tap::control::setpoint::MoveInteg
 }  // namespace src::control::agitator
 #endif  // CONSTANT_VELOCITY_AGITATOR_COMMAND_HPP_
 
-<<<<<<< HEAD
 #endif  // TARGET_LAUNCHER
-=======
-#endif
->>>>>>> main

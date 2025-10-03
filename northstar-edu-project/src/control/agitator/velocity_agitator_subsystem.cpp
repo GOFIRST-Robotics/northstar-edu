@@ -1,8 +1,4 @@
 #ifdef TARGET_LAUNCHER
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 #include "velocity_agitator_subsystem.hpp"
 
 #include <cassert>

@@ -28,6 +28,15 @@ class FlywheelRunCommand : public tap::control::Command
     The constructor will need a FlywheelSubsystem pointer that gets stored privately.
     Now with the Command class as reference define everything
     */
+    FlywheelRunCommand(FlywheelSubsystem* subsystem);
+    const char* getName() const override;
+    void initialize() override;
+    void execute() override;
+    void end(bool interrupted) override;
+    bool isFinished() const override;
+
+private:
+    FlywheelSubsystem* subsystem_;
 };
 }  // namespace src::control::flywheel
 #endif  // FLYWHEEL_RUN_COMMAND

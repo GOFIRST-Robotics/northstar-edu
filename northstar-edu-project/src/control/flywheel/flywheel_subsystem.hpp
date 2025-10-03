@@ -22,7 +22,11 @@ public:
     Name needs to be same as class name, and needs to take in a drivers pointer and a left and right
     motor Id of type tap::motor::MotorId
     */
-    FlywheelSubsystem(tap::Drivers* drivers, tap::motor::MotorId left, tap::motor::MotorId right);
+    FlywheelSubsystem(
+        tap::Drivers* drivers,
+        tap::motor::MotorId left,
+        tap::motor::MotorId right,
+        tap::can::CanBus can_bus);
     void initialize() override;
 
     /* STEP 2: DECLARE METHODS
@@ -50,12 +54,12 @@ public:
         motor->getEncoder()->getVelocity() * 60.0f / M_TWOPI; this can be implemented in the .hpp
     */
     void setLaunchSpeed(float mps);
-    float getLaunchSpeedRight();
-    float getLaunchSpeedLeft();
-    float getDesiredFlywheelSpeedRight();
-    float getDesiredFlywheelSpeedLeft();
-    float getCurrentFlywheelRPMRight();
-    float getCurrentFlywheelRPMLeft();
+    float getDesiredLaunchSpeedRight() { return desired_launch_right; }
+    float getDesiredLaunchSpeedLeft() { return desired_launch_left; }
+    float getDesiredFlywheelSpeedRight() { return launchSpeedToFlywheelRPM(desired_launch_right); }
+    float getDesiredFlywheelSpeedLeft() { return launchSpeedToFlywheelRPM(desired_launch_left); }
+    float getCurrentFlywheelRPMRight() { return getWheelRPM(&motor_right); }
+    float getCurrentFlywheelRPMLeft() { return getWheelRPM(&motor_left); }
     void refresh() override;
 
     void refreshSafeDisconnect() override
