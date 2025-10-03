@@ -22,8 +22,11 @@ public:
     Name needs to be same as class name, and needs to take in a drivers pointer and a left and right
     motor Id of type tap::motor::MotorId
     */
-
-    // void initialize() override; UNCOMMENT THIS
+    FlywheelSubsystem(
+        tap::Drivers *drivers,
+        tap::motor::MotorId leftWheel,
+        tap::motor::MotorId rightWheel);
+    void initialize() override;
 
     /* STEP 2: DECLARE METHODS
     Flywheel subsystem needs a setter for a desired launch speed, and setters for Flywheel speeds.
