@@ -32,10 +32,14 @@ public:
     */
 
     // STEP 1 HERE
-
     // STEP 2 HERE
 
-    const char *getName() const override { return "Chassis tank drive"; }
+    ChassisDriveCommand(ChassisSubsystem* chassis, control::ControlOperatorInterface* coi);
+
+    int src::chassis::ChassisDriveCommand::Max_Chassis_Speed_MPS = 4.0f;  // declaration
+    static constexpr float MAX_CHASSIS_SPEED_MPS = 4.0f;
+
+    const char* getName() const override { return "Chassis tank drive"; }
 
     void initialize() override {}
 
@@ -46,6 +50,11 @@ public:
     bool isFinished() const { return false; }
 
 private:
+    // the * is a pointer, im gonna forget that's what that means
     // STEP 1 HERE - Make member variables for the pointers.
+
+    ChassisSubsystem* chassisSubsystem;
+
+    control::ControlOperatorInterface* controlOperatorInterface;
 };
 }  // namespace src::chassis

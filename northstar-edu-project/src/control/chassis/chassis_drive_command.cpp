@@ -34,8 +34,36 @@ chassis velocity to 0 for all parameters.
 
 // STEP 1 HERE
 
-// STEP 2 HERE
+ChassisDriveCommand::ChassisDriveCommand(
+    ChassisSubsystem* chassis,
+    control::ControlOperatorInterface* coi)
+    : chassisSubsystem(chassis),
+      controlOperatorInterface(coi)
+{
+    addSubsystemRequirement(chassis);
+}
+// STEP 2 HERE (values for velocity are from task 6)
+// something
 
+//
 };  // namespace src::chassis
 
+namespace src::chassis
+{
+void ChassisDriveCommand::execute()
+{
+    double x = limitVal(m_oi->GetDriveX(), -1.0, 1.0);
+    double y = limitVal(m_oi->GetDriveY(), -1.0, 1.0);
+    double rot = limitVal(m_oi->GetDriveRotation(), -1.0, 1.0);
+
+    double maxSpeed = m_chassis->GetMaxSpeed();
+
+    m_chassis->SetVelocityFieldDrive(x * maxSpeed, y * maxSpeed, rot * maxSpeed);
+}
+
+void src::chassis::ChassisDriveCommand::end(bool interrupted)
+{  // stops robot
+    m_chassis->SetVelocityFieldDrive(0.0, 0.0, 0.0);
+}
+}  // namespace src::chassis
 #endif

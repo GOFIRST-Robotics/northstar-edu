@@ -1,4 +1,4 @@
-//#define FLY_SKY
+#define FLY_SKY
 #ifdef FLY_SKY
 #include "subsystem/fly_sky_control_operator_interface.hpp"
 #else
@@ -47,11 +47,14 @@ In the public section, make three methods that return a float and take no parame
 Take note of the remote object that is a member variable of this class. You will be using this in
 the next task.
 */
-void getDrivetrainHorizontalTranslation();
+
 class ControlOperatorInterface
 {
 public:
     ControlOperatorInterface(tap::Drivers *drivers) : remote(drivers->remote) {}
+    float getDrivetrainHorizontalTranslation();
+    float getDrivetrainVerticalTranslation();
+    float getDrivetrainRotationalTranslation();
 
 private:
     tap::communication::serial::Remote &remote;
