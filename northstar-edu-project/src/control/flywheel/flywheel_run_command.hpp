@@ -21,6 +21,7 @@ namespace src::control::flywheel
 {
 class FlywheelRunCommand : public tap::control::Command
 {
+public:
     /* Flywheel task 3
     STEP 1: DEFINE CONSTRUCTOR, METHODS, AND VARIABLES.
     This command will only use the base Command methods so look at the class for reference.
@@ -31,9 +32,9 @@ class FlywheelRunCommand : public tap::control::Command
     FlywheelRunCommand(FlywheelSubsystem* subsystem);
     const char* getName() const override;
     void initialize() override;
-    void execute() override;
+    void execute() override {}
     void end(bool interrupted) override;
-    bool isFinished() const override;
+    bool isFinished() const override { return false; }
 
 private:
     FlywheelSubsystem* subsystem_;

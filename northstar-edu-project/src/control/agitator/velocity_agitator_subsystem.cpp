@@ -17,7 +17,7 @@
 #include "modm/math/filter/pid.hpp"
 
 using namespace tap::motor;
-
+using namespace tap::control::setpoint;
 namespace src::agitator
 {
 /* Agitator Task 2
@@ -38,10 +38,23 @@ These methods are used to run the velocity PID and set the velocity setpoint. Lo
 and understand what is going on. If you have questions ask.
 
 */
+
 VelocityAgitatorSubsystem::VelocityAgitatorSubsystem(
-    // STEP 1 HERE
-    )
-    :
+    tap::Drivers* drivers,
+    const tap::algorithms::SmoothPidConfig& smooth_config,
+    const VelocityAgitatorSubsystemConfig& config_in)
+    : Subsystem(drivers),
+      config{config_in},
+      velocityPid{smooth_config},
+      jamChecker{this, config.jammingVelocityDifference, config.jammingTime},
+      agitatorMotor{
+          drivers,
+          config.agitatorMotorId,
+          config.agitatorCanBusId,
+          config.isAgitatorInverted,
+          "AgitatorMotor",
+          false,
+          config.gearRatio}
 
 {
     assert(config.jammingVelocityDifference >= 0);
@@ -74,12 +87,28 @@ void VelocityAgitatorSubsystem::refresh()
 
 bool VelocityAgitatorSubsystem::calibrateHere()
 {
-    // STEP 3 HERE
+    if (!isOnline())
+    {
+        return false;
+    }
+    else
+    {
+        agitatorMotor.resetEncoderValue();
+        agitatorIsCalibrated = true;
+        velocitySetpoint = 0.0f;
+        clearJam();
+        return true;
+    }
 }
 
 float VelocityAgitatorSubsystem::getCurrentValueIntegral() const
 {
-    // STEP 4 HERE
+    if (!agitatorIsCalibrated)
+    {
+        return 0;
+    }
+
+    return agitatorMotor.getEncoder()->getPosition().getUnwrappedValue();
 }
 
 void VelocityAgitatorSubsystem::runVelocityPidControl()

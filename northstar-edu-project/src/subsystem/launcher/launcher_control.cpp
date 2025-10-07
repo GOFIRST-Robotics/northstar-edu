@@ -55,7 +55,6 @@ for motor ids and can bus.
 FlywheelSubsystem flywheel_subsystem{drivers(), LEFT_MOTOR_ID, RIGHT_MOTOR_ID, CAN_BUS};
 // STEP 2: CREATE FLYWHEELRUNCOMMAND
 // flywheel commands
-
 FlywheelRunCommand flywheel_run_command{&flywheel_subsystem};
 
 /* STEP 3: MAKE COMMAND MAPPING
@@ -84,38 +83,52 @@ ToggleCommandMapping flywheel_mapping_switch{
 // AGITATOR WORK HERE
 
 // agitator subsystem HERE
-
+VelocityAgitatorSubsystem agitator_subsystem{
+    drivers(),
+    constants::AGITATOR_PID_CONFIG,
+    constants::AGITATOR_CONFIG};
 // agitator commands (ConstantVelocityAgitatorCommand and UnjamSpokeAgitatorCommand with agitator
 // configs in constants)
-
+ConstantVelocityAgitatorCommand constant_agitator_command{
+    agitator_subsystem,
+    constants::AGITATOR_ROTATE_CONFIG};
+UnjamSpokeAgitatorCommand unjam_agitator_command{
+    agitator_subsystem,
+    constants::AGITATOR_UNJAM_CONFIG};
 // make a MoveUnjamIntegralComprisedCommand which takes in both previous commands
-
+MoveUnjamIntegralComprisedCommand move_compromised_command{
+    *drivers(),
+    agitator_subsystem,
+    constant_agitator_command,
+    unjam_agitator_command};
 // Below are mappings for the commands, uncomment and finish them
 
-// HoldRepeatCommandMapping leftMousePressedShoot(
-//     drivers(),
-//     {&<comprised command here>},
-//     RemoteMapState(RemoteMapState::MouseButton::LEFT),
-//     false);
+HoldRepeatCommandMapping leftMousePressedShoot(
+    drivers(),
+    {&move_compromised_command},
+    RemoteMapState(RemoteMapState::MouseButton::LEFT),
+    false);
 
-// HoldRepeatCommandMapping rightSwitchUpShoot(
-//     drivers(),
-//     {&<comprised command here>},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-//     false);
+HoldRepeatCommandMapping rightSwitchUpShoot(
+    drivers(),
+    {&move_compromised_command},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+    false);
 
 void initializeSubsystems(Drivers *drivers)
 {
     // FLYWHEEL STEP 4: INITIALIZE SUBSYSTEM
     flywheel_subsystem.initialize();
+    agitator_subsystem.initialize();
     // Initialize agitator
 }
 
 void registerStandardSubsystems(Drivers *drivers)
 {
     // FLYWHEEL STEP 5: REGISTAR SUBSYSTEM
-    flywheel_subsystem.registerAndInitialize();
+    drivers->commandScheduler.registerSubsystem(&flywheel_subsystem);
     // Register agitator
+    drivers->commandScheduler.registerSubsystem(&agitator_subsystem);
 }
 
 void setDefaultStandardCommands(Drivers *drivers) {}
@@ -133,6 +146,8 @@ void registerStandardIoMappings(Drivers *drivers)
     drivers->commandMapper.addMap(&flywheel_mapping_f);
     drivers->commandMapper.addMap(&flywheel_mapping_switch);
     // Add agitator mappings
+    drivers->commandMapper.addMap(&leftMousePressedShoot);
+    drivers->commandMapper.addMap(&rightSwitchUpShoot);
 }
 
 RemoteSafeDisconnectFunction remoteSafeDisconnectFunction(drivers());
