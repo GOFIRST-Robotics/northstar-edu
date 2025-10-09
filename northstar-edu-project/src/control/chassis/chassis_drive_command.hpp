@@ -36,7 +36,6 @@ public:
 
     ChassisDriveCommand(ChassisSubsystem* chassis, control::ControlOperatorInterface* coi);
 
-    int src::chassis::ChassisDriveCommand::Max_Chassis_Speed_MPS = 4.0f;  // declaration
     static constexpr float MAX_CHASSIS_SPEED_MPS = 4.0f;
 
     const char* getName() const override { return "Chassis tank drive"; }

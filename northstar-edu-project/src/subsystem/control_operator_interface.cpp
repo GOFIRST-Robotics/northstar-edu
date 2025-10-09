@@ -1,4 +1,3 @@
-#define FLY_SKY
 #ifndef FLY_SKY
 
 /*
@@ -37,13 +36,12 @@ namespace src
 {
 namespace control
 {
-void GetDrivetrainHorizontalTranslation()
+void GetDrivetrainHorizontalTranslation();
 
-    void GetDriveTrainVerticalTranslation()
+void GetDriveTrainVerticalTranslation();
 
-        void getDrivetrainRotationalTranslation()
+void getDrivetrainRotationalTranslation();
 
-}
 /*
 Chassis Task 4:
 STEP 1: CREATE METHODS MADE IN THE HEADER FILE
@@ -66,40 +64,40 @@ rotational input from Remote::Channel::WHEEL.
 After you are done with this step, you should repeat task 3 and 4 for the fly sky remote
 operator interface.
 */
-void ControlOperatorInterface::getDrivetrainHorizontalTranslation()
+float ControlOperatorInterface::getDrivetrainHorizontalTranslation()
 {
     {
-        remote.getChannel(Remote::Channel::Left_HORIZONTAL);
+        remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
         {
-            if remote
-                .keyPressed(Remote::Key::A) return -1.0f;
-            if remote
-                .keyPressed(Remote::Key::D) return 1.0f;
+            if (remote.keyPressed(Remote::Key::A)) return -1.0f;
+            if (remote.keyPressed(Remote::Key::D)) return 1.0f;
         }
     }
-    void ControlOperatorInterface::getDrivetrainVerticalTranslation()
+}
+float ControlOperatorInterface::getDrivetrainVerticalTranslation()
+{
     {
+        remote.getChannel(Remote::Channel::LEFT_VERTICAL);
         {
-            remote.getChannel(Remote::Channel::LEFT_VERTICAL);
-            {
-                if remote
-                    .keyPressed(Remote::Key::S) return -1.0f;
-                if remote
-                    .keyPressed(Remote::Key::W) return 1.0f;
-            }
-        }
-        void ControlOperatorInterface::getDrivetrainRotationalTranslation()
-        {
-            remote.getChannel(Remote::Channel::WHEEL);
-            if remote
-                .KeyPressed(Remote::Key::Q) return -MAX_ROTATIONAL_SPEED_RPS;
-            if remote
-                .KeyPressed(Remote::Key::E) return MAX_ROTATIONAL_SPEED_RPS;
+            if (remote.keyPressed(Remote::Key::S)) return -1.0f;
+
+            if (remote.keyPressed(Remote::Key::W)) return 1.0f;
         }
     }
+}
+float ControlOperatorInterface::getDrivetrainRotationalTranslation()
+{
+    remote.getChannel(Remote::Channel::WHEEL);
+    if (remote.keyPressed(Remote::Key::Q)) return -1.0f * MAX_ROTATIONAL_SPEED_RPS;
 
+    if (remote.keyPressed(Remote::Key::E)) return 1.0f * MAX_ROTATIONAL_SPEED_RPS;
+}
+
+namespace
+{
+constexpr float MAX_ROTATIONAL_SPEED_RPS = 6.2831853f;  // 2π rad/s
+}
 }  // namespace control
 
-}  // namespace src
-
 #endif  // FLY_SKY
+}

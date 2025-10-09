@@ -1,4 +1,3 @@
-#define FLY_SKY
 #ifdef FLY_SKY
 #include "subsystem/fly_sky_control_operator_interface.hpp"
 #else

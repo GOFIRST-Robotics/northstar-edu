@@ -52,18 +52,20 @@ namespace src::chassis
 {
 void ChassisDriveCommand::execute()
 {
-    double x = limitVal(m_oi->GetDriveX(), -1.0, 1.0);
-    double y = limitVal(m_oi->GetDriveY(), -1.0, 1.0);
-    double rot = limitVal(m_oi->GetDriveRotation(), -1.0, 1.0);
+    double x =
+        limitVal(controlOperatorInterface->getDrivetrainHorizontalTranslation(), -1.0f, 1.0f);
+    double y = limitVal(controlOperatorInterface->getDrivetrainVerticalTranslation(), -1.0f, 1.0f);
+    double rot =
+        limitVal(controlOperatorInterface->getDrivetrainRotationalTranslation(), -1.0f, 1.0f);
 
-    double maxSpeed = m_chassis->GetMaxSpeed();
+    double maxSpeed = MAX_CHASSIS_SPEED_MPS;
 
-    m_chassis->SetVelocityFieldDrive(x * maxSpeed, y * maxSpeed, rot * maxSpeed);
+    chassisSubsystem->setVelocityFieldDrive(x * maxSpeed, y * maxSpeed, rot * maxSpeed);
 }
 
 void src::chassis::ChassisDriveCommand::end(bool interrupted)
 {  // stops robot
-    m_chassis->SetVelocityFieldDrive(0.0, 0.0, 0.0);
+    chassisSubsystem->setVelocityFieldDrive(0.0, 0.0, 0.0);
 }
 }  // namespace src::chassis
 #endif
