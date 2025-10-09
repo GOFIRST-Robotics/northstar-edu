@@ -1,3 +1,5 @@
+#ifdef TARGET_LAUNCHER
+
 #ifndef VELOCITY_AGITATOR_SUBSYSTEM_CONFIG_HPP_
 #define VELOCITY_AGITATOR_SUBSYSTEM_CONFIG_HPP_
 
@@ -44,3 +46,5 @@ struct VelocityAgitatorSubsystemConfig
 }  // namespace src::agitator
 
 #endif  // VELOCITY_AGITATOR_SUBSYSTEM_CONFIG_HPP_
+
+#endif

@@ -1,3 +1,5 @@
+#ifdef TARGET_LAUNCHER
+
 #ifndef VELOCITY_AGITATOR_SUBSYSTEM_HPP_
 #define VELOCITY_AGITATOR_SUBSYSTEM_HPP_
 
@@ -167,3 +169,5 @@ private:
 }  // namespace src::agitator
 
 #endif  // VELOCITY_AGITATOR_SUBSYSTEM_HPP_
+
+#endif

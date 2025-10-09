@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+#ifdef TARGET_LAUNCHER
+
 #ifndef UNJAM_SPOKE_AGITATOR_COMMAND_HPP_
 #define UNJAM_SPOKE_AGITATOR_COMMAND_HPP_
 
@@ -47,8 +50,7 @@ public:
     able to move the agitator by small amounts to accomplish shooting and unjamming. Since we need a
     way to switch between them we use a move_unjam_integral_comprised_command which switches between
     the two commands by scheduling them when necessary. Look through that command and understand how
-    it works. Then be ready to implement it with the two commands here and the subsystem in a
-    control file.
+    it works. Then go to launcher_control and implement the agitator.
     */
     struct Config
     {
@@ -139,3 +141,5 @@ private:
 }  // namespace src::control::agitator
 
 #endif  // UNJAM_SPOKE_AGITATOR_COMMAND_HPP_
+
+#endif

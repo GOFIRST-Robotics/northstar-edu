@@ -17,6 +17,8 @@
  * along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifdef TARGET_LAUNCHER
+
 #ifndef FIRE_RATE_TIMER_HPP_
 #define FIRE_RATE_TIMER_HPP_
 
@@ -70,3 +72,5 @@ private:
 }  // namespace src::control::agitator
 
 #endif  // FIRE_RATE_TIMER_HPP_
+
+#endif

@@ -1,3 +1,5 @@
+#ifdef TARGET_LAUNCHER
+
 #ifndef SET_FIRE_RATE_COMMAND_HPP_
 #define SET_FIRE_RATE_COMMAND_HPP_
 
@@ -56,5 +58,7 @@ private:
     std::optional<src::control::agitator::ConstantVelocityAgitatorCommand *> command;
 };
 }  // namespace src::agitator
+
+#endif
 
 #endif
