@@ -68,7 +68,7 @@ public:
     It should look like this Ex. "ClassName(Thing thing1, Thing thing2);"
     */
     // STEP 1 HERE
-    ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config);
+    ChassisSubsystem(tap::Drivers* const, ChassisConfig& config);
     /*
     STEP 2: DECLARE METHODS
 
@@ -80,10 +80,8 @@ public:
     for the heading
     */
     // STEP 2 HERE
-    void setvelocityFieldDrive(float forward, float sideways, float rotational);
-
-    void driveBasedOnHeading(float forward, float sideways, float rotational, float heading);
-
+    void setVelocityFieldDrive(float fwd, float side, float rot);
+    void driveBasedOnHeading(float fwd, float side, float rot, float heading);
     void initialize() override;
 
     void refresh() override;
@@ -124,9 +122,10 @@ private:
         -rampControllers array or tap::algorithms::Ramp objects to limit acceleration on the wheels
     */
     // STEP 3 private HERE
-
     std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> desiredOutput;
+
     std::array<Pid, static_cast<uint8_t>(MotorId::NUM_MOTORS)> pidControllers;
+
     std::array<tap::algorithms::Ramp, static_cast<uint8_t>(MotorId::NUM_MOTORS)> rampControllers;
 
 protected:
@@ -137,6 +136,7 @@ protected:
      */
     // STEP 3 protected HERE
     std::array<Motor, static_cast<uint8_t>(MotorId::NUM_MOTORS)> motors;
+
 };  // class ChassisSubsystem
 }  // namespace src::chassis
 

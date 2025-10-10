@@ -41,6 +41,8 @@ namespace control
 Chassis Task 4:
 STEP 1: CREATE METHODS MADE IN THE HEADER FILE
 
+void
+
 This step is pretty straightforward. You need to define the methods you made in the header.
 
 STEP 2: GET THE VALUES FROM THE REMOTE OBJECT
