@@ -63,8 +63,44 @@ namespace src::chassis
     initializer list, the body of the constructor is empty, which is perfectly normal.
 */
 
-//STEP 1-4 HERE
+// STEP 1-4 HERE
 
+ChassisSubsystem::ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config)
+    : Subsystem(drivers),
+      desiredOutput{},
+      pidControllers{
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT)},
+      motors{
+          Motor(drivers, config.leftFrontId, config.canBus, false, "LF"),
+          Motor(drivers, config.leftBackId, config.canBus, false, "LB"),
+          Motor(drivers, config.rightFrontId, config.canBus, false, "RF"),
+          Motor(drivers, config.rightBackId, config.canBus, false, "RB"),
+      }
+{
+}
 
 void ChassisSubsystem::initialize()
 {
@@ -107,8 +143,31 @@ void ChassisSubsystem::initialize()
    MotorId enum to determine what motor is what index. After you set all 4 indexes you are done, the
    motors will be told these values in the refresh method.
 */
-//STEP 5 HERE
+// STEP 5 HERE
+void ChassisSubsystem::driveBasedOnHeading(float fwd, float side, float rot, float heading)
+{
+    float x_local = fwd * cos(heading) + side * sin(heading);
+    float y_local = -fwd * sin(heading) + side * cos(heading);
 
+    float left_front = (x_local - y_local) / 1.41421356f + (rot)*DIST_TO_CENTER * 1.41421356f;
+
+    float right_front = (-x_local - y_local) / 1.41421356f + (rot)*DIST_TO_CENTER * 1.41421356f;
+
+    float right_back = (-x_local + y_local) / 1.41421356f + (rot)*DIST_TO_CENTER * 1.41421356f;
+
+    float left_back = (x_local + y_local) / 1.41421356f + (rot)*DIST_TO_CENTER * 1.41421356f;
+
+    desiredOutput[0] = left_front;
+    desiredOutput[1] = right_front;
+    desiredOutput[2] = right_back;
+    desiredOutput[3] = left_back;
+
+    for (float output : desiredOutput)
+    {
+        output = mpsToRpm(output);
+        output = limitVal<float>(output, -MAX_WHEELSPEED_RPM, MAX_WHEELSPEED_RPM);
+    }
+}
 /*
    STEP 6: setVelocityFieldDrive METHOD
 
@@ -119,11 +178,14 @@ void ChassisSubsystem::initialize()
    driveBasedOnHeading with the all the values it needs.
 
 */
-//STEP 6 HERE
+// STEP 6 HERE
+void ChassisSubsystem::setvelocityFieldDrive(float fwd, float side, float rot)
+{
+    ChassisSubsystem::driveBasedOnHeading(fwd, side, rot, drivers->bmi088.getYaw());
+}
+// STEP 7: REFRESH METHOD
 
-/* STEP 7: REFRESH METHOD
-
-Here is the refresh method, go through is and try to understand what is happening.
+// Here is the refresh method, go through is and try to understand what is happening.
 
 void ChassisSubsystem::refresh()
 {
@@ -147,8 +209,8 @@ void ChassisSubsystem::refresh()
             desiredOutput[ii],
             mpsToRpm(RAMP_UP_RPM_INCREMENT_MPS));
     }
-} Uncoment this block
-*/ 
+}  // Uncoment this block
+
 }  // namespace src::chassis
 
 #endif
