@@ -19,7 +19,7 @@ env["BASEPATH"] = abspath("..")
 env["COMPILERPREFIX"] = "arm-none-eabi-"
 # SCons tools
 env.Append(toolpath=[
-    abspath(r"scons\site_tools"),
+    abspath(r"scons/site_tools"),
 ])
 env.Tool("artifact")
 env.Tool("bmp")

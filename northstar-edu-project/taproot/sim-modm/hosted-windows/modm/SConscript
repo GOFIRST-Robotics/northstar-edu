@@ -18,7 +18,7 @@ env["BUILDPATH"] = join(env["CONFIG_BUILD_BASE"], "scons-" + profile)
 env["BASEPATH"] = abspath("..")
 # SCons tools
 env.Append(toolpath=[
-    abspath(r"scons\site_tools"),
+    abspath(r"scons/site_tools"),
 ])
 env.Tool("build_target")
 env.Tool("comstr")

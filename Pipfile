@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 
 [dev-packages]
+scons = "*"
 
 [requires]
-python_version = "3.12"
 python_version = "3.11"
