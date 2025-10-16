@@ -7,11 +7,14 @@
                 "northstar-edu-project/taproot/modm/src",
                 "northstar-edu-project/taproot/modm/ext/cmsis/core",
                 "northstar-edu-project/taproot/modm/ext/cmsis/device",
-                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"        
+                "northstar-edu-project/taproot/modm/ext/cmsis/dsp",
+                "${workspaceFolder}/northstar-edu-project/taproot/modm"
             ],
             "compilerPath": "arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm",
-            "browse": { "limitSymbolsToIncludedHeaders": true },
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            },
             "defines": [
                 "TARGET_CHASSIS"
             ]
@@ -23,11 +26,13 @@
                 "northstar-edu-project/taproot/modm/src",
                 "northstar-edu-project/taproot/modm/ext/cmsis/core",
                 "northstar-edu-project/taproot/modm/ext/cmsis/device",
-                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"        
+                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"
             ],
             "compilerPath": "arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm",
-            "browse": { "limitSymbolsToIncludedHeaders": true },
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            },
             "defines": [
                 "TARGET_LAUNCHER"
             ]
@@ -39,13 +44,16 @@
                 "northstar-edu-project/taproot/modm/src",
                 "northstar-edu-project/taproot/modm/ext/cmsis/core",
                 "northstar-edu-project/taproot/modm/ext/cmsis/device",
-                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"        
+                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"
             ],
             "compilerPath": "arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm",
-            "browse": { "limitSymbolsToIncludedHeaders": true },
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            },
             "defines": [
-                "TARGET_CHASSIS", "FLY_SKY"
+                "TARGET_CHASSIS",
+                "FLY_SKY"
             ]
         },
         {
@@ -55,13 +63,16 @@
                 "northstar-edu-project/taproot/modm/src",
                 "northstar-edu-project/taproot/modm/ext/cmsis/core",
                 "northstar-edu-project/taproot/modm/ext/cmsis/device",
-                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"        
+                "northstar-edu-project/taproot/modm/ext/cmsis/dsp"
             ],
             "compilerPath": "arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm",
-            "browse": { "limitSymbolsToIncludedHeaders": true },
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            },
             "defines": [
-                "TARGET_LAUNCHER", "FLY_SKY"
+                "TARGET_LAUNCHER",
+                "FLY_SKY"
             ]
         }
     ],

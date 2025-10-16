@@ -20,7 +20,7 @@ env["BASEPATH"] = abspath("..")
 env["COMPILERSUFFIX"] = env.Detect(["gcc-11", "gcc-10"])[3:]
 # SCons tools
 env.Append(toolpath=[
-    abspath(r"scons\site_tools"),
+    abspath(r"scons/site_tools"),
 ])
 env.Tool("build_target")
 env.Tool("comstr")

@@ -104,6 +104,45 @@ ChassisSubsystem::ChassisSubsystem(tap::Drivers* const, ChassisConfig& config)
 {
 }
 
+ChassisSubsystem::ChassisSubsystem(tap::Drivers* drivers, const ChassisConfig& config)
+    : Subsystem(drivers),
+      desiredOutput{},
+
+      pidControllers{
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+          modm::Pid<float>(
+              VELOCITY_PID_KP,
+              VELOCITY_PID_KI,
+              VELOCITY_PID_KD,
+              VELOCITY_PID_MAX_ERROR_SUM,
+              VELOCITY_PID_MAX_OUTPUT),
+      },
+      motors{
+          Motor(drivers, config.leftFrontId, config.canBus, false, "LF"),
+          Motor(drivers, config.leftBackId, config.canBus, false, "LB"),
+          Motor(drivers, config.rightBackId, config.canBus, false, "RB"),
+          Motor(drivers, config.rightFrontId, config.canBus, false, "RF")
+
+      }
+{
+}
 
 void ChassisSubsystem::initialize()
 {
